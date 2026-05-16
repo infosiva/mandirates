@@ -15,9 +15,16 @@ export const metadata: Metadata = {
     "Today's mandi (market) prices for all major crops across India. Live data from Agmarknet. Check MSP, compare prices, get AI insights.",
 };
 
+const TN_COMMODITIES = ["Paddy(Dhan)(Common)", "Banana", "Tomato", "Onion", "Groundnut", "Coconut"];
+
 export default async function HomePage() {
-  const allPrices = await fetchMandiPrices(undefined, 200);
+  const [allPrices, tnPrices] = await Promise.all([
+    fetchMandiPrices(undefined, 200),
+    fetchMandiPrices(undefined, 100, "Tamil Nadu"),
+  ]);
+
   const summaries = summariseByCommodity(allPrices);
+  const tnSummaries = summariseByCommodity(tnPrices);
 
   // Filter to popular commodities only, in order
   const popularSummaries: CommoditySummary[] = POPULAR_COMMODITIES.map(
@@ -37,46 +44,180 @@ export default async function HomePage() {
 
   const topThree = popularSummaries.slice(0, 3);
 
+  // TN spotlight: top 4 by data availability, fallback to any available
+  const tnSpotlight: CommoditySummary[] = TN_COMMODITIES.map(
+    (name) =>
+      tnSummaries.find(
+        (s) => s.commodity.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(s.commodity.toLowerCase())
+      )
+  )
+    .filter((s): s is CommoditySummary => !!s && s.avgModal > 0)
+    .slice(0, 4);
+
+  const tnAny = tnSummaries.filter((s) => s.avgModal > 0).slice(0, 4);
+  const tnDisplay = tnSpotlight.length >= 2 ? tnSpotlight : tnAny;
+
+  const TN_COLORS = [
+    { bg: "from-emerald-600 to-teal-700", badge: "bg-emerald-500", text: "text-emerald-100" },
+    { bg: "from-amber-500 to-orange-600", badge: "bg-amber-400", text: "text-amber-100" },
+    { bg: "from-violet-600 to-purple-700", badge: "bg-violet-500", text: "text-violet-100" },
+    { bg: "from-rose-500 to-pink-600", badge: "bg-rose-400", text: "text-rose-100" },
+  ];
+
   return (
-    <div className="max-w-6xl mx-auto px-4 py-8">
-      {/* Hero */}
-      <section className="text-center mb-10">
-        <h1 className="text-3xl md:text-4xl font-bold text-green-800 mb-3">
-          🌾 MandiRates
-        </h1>
-        <p className="text-gray-600 text-lg mb-6">
-          Daily mandi prices · MSP tracker · AI price insights
-        </p>
-        <SearchBar />
+    <div className="max-w-6xl mx-auto px-4 py-6">
+      {/* Hero — compact, colorful */}
+      <section className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-green-800 via-green-700 to-teal-800 p-6 md:p-10 text-white shadow-2xl">
+        {/* Background pattern */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 right-0 w-72 h-72 rounded-full bg-amber-400 blur-3xl -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-56 h-56 rounded-full bg-teal-300 blur-3xl translate-y-1/2 -translate-x-1/2" />
+        </div>
+        <div className="relative z-10 max-w-2xl mx-auto text-center">
+          <div className="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm border border-white/20 rounded-full px-4 py-1.5 text-xs font-semibold mb-4">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            Live · Data from Agmarknet
+          </div>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tight mb-3">
+            🌾 Mandi<span className="text-amber-400">Rates</span>
+          </h1>
+          <p className="text-green-100 text-base md:text-lg mb-6 font-medium">
+            Daily mandi prices · MSP tracker · AI price insights
+          </p>
+          <SearchBar />
+        </div>
+        {/* Stat pills */}
+        <div className="relative z-10 flex flex-wrap justify-center gap-3 mt-6">
+          {[
+            { label: "States covered", value: "28+" },
+            { label: "Crops tracked", value: "200+" },
+            { label: "Updated", value: "Every 6h" },
+          ].map((stat) => (
+            <div key={stat.label} className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl px-4 py-2 text-center">
+              <p className="text-lg font-black text-white">{stat.value}</p>
+              <p className="text-xs text-green-200">{stat.label}</p>
+            </div>
+          ))}
+        </div>
       </section>
 
       {/* Ad Banner Top */}
       <AdBanner slot="1111111111" className="mb-8" />
 
-      {/* Today's Highlights */}
+      {/* Tamil Nadu Spotlight — shown first */}
+      {tnDisplay.length > 0 && (
+        <section className="mb-10">
+          <div className="flex items-center gap-3 mb-4">
+            <span className="text-2xl">🏛️</span>
+            <div>
+              <h2 className="text-xl font-bold text-green-800">
+                Tamil Nadu Markets Today
+              </h2>
+              <p className="text-xs text-gray-500">Live prices from TN mandis · ₹ per quintal</p>
+            </div>
+            <span className="ml-auto text-xs font-medium bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200">
+              🌟 Featured State
+            </span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            {tnDisplay.map((s, i) => {
+              const c = TN_COLORS[i % TN_COLORS.length];
+              return (
+                <div
+                  key={s.commodity}
+                  className={`bg-gradient-to-br ${c.bg} text-white rounded-2xl p-4 shadow-lg relative overflow-hidden`}
+                >
+                  <div className={`absolute top-2 right-2 ${c.badge} text-white text-[10px] font-bold px-2 py-0.5 rounded-full`}>
+                    TN
+                  </div>
+                  <p className={`text-xs uppercase tracking-widest font-semibold ${c.text} mb-1`}>
+                    {s.commodity.replace(/\(.*?\)/g, "").trim()}
+                  </p>
+                  <p className="text-2xl font-black mt-1">
+                    ₹{s.avgModal.toLocaleString("en-IN")}
+                  </p>
+                  <p className={`${c.text} text-xs mt-0.5`}>avg modal / qtl</p>
+                  <div className="flex items-center gap-2 mt-2">
+                    <span className="text-[10px] bg-white/20 rounded px-1.5 py-0.5">
+                      {s.markets} mandis
+                    </span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          {tnSummaries.length > 4 && (
+            <div className="mt-3 bg-white border border-green-100 rounded-xl overflow-hidden shadow-sm">
+              <table className="w-full text-sm">
+                <thead className="bg-gradient-to-r from-green-700 to-teal-700 text-white">
+                  <tr>
+                    <th className="px-4 py-2 text-left">Crop</th>
+                    <th className="px-4 py-2 text-right">Modal ₹</th>
+                    <th className="px-4 py-2 text-right hidden sm:table-cell">Min</th>
+                    <th className="px-4 py-2 text-right hidden sm:table-cell">Max</th>
+                    <th className="px-4 py-2 text-right hidden md:table-cell">Mandis</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {tnSummaries.filter((s) => s.avgModal > 0).slice(0, 8).map((s, i) => (
+                    <tr key={s.commodity} className={i % 2 === 0 ? "bg-white" : "bg-emerald-50"}>
+                      <td className="px-4 py-2 font-medium text-green-800">
+                        {s.commodity.replace(/\(.*?\)/g, "").trim()}
+                      </td>
+                      <td className="px-4 py-2 text-right font-bold text-emerald-700">
+                        ₹{s.avgModal.toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-4 py-2 text-right text-gray-400 hidden sm:table-cell">
+                        ₹{s.minPrice.toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-4 py-2 text-right text-gray-400 hidden sm:table-cell">
+                        ₹{s.maxPrice.toLocaleString("en-IN")}
+                      </td>
+                      <td className="px-4 py-2 text-right text-gray-400 hidden md:table-cell">
+                        {s.markets}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </section>
+      )}
+
+      {/* Today's National Highlights */}
       {topThree.length > 0 && (
         <section className="mb-10">
-          <h2 className="text-xl font-bold text-green-800 mb-4">
-            Today&apos;s Market Highlights
-          </h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-gray-800">🇮🇳 National Highlights</h2>
+            <span className="text-xs text-gray-400">All India avg · ₹/qtl</span>
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {topThree.map((s) => (
-              <div
-                key={s.commodity}
-                className="bg-green-700 text-white rounded-xl p-5 shadow"
-              >
-                <p className="text-sm uppercase tracking-wide text-green-200">
-                  {s.commodity}
-                </p>
-                <p className="text-3xl font-bold mt-1">
-                  ₹{s.avgModal.toLocaleString("en-IN")}
-                </p>
-                <p className="text-green-200 text-sm">avg modal / quintal</p>
-                <p className="text-xs text-green-300 mt-2">
-                  {s.markets} markets · {s.states} states
-                </p>
-              </div>
-            ))}
+            {topThree.map((s, i) => {
+              const colors = [
+                "from-green-600 to-emerald-700",
+                "from-teal-600 to-cyan-700",
+                "from-lime-600 to-green-700",
+              ];
+              return (
+                <div
+                  key={s.commodity}
+                  className={`price-card bg-gradient-to-br ${colors[i % 3]} text-white rounded-2xl p-5 shadow-lg`}
+                >
+                  <p className="text-xs uppercase tracking-widest font-semibold text-white/70 mb-1">
+                    {s.commodity}
+                  </p>
+                  <p className="text-4xl font-black mt-1 leading-tight">
+                    ₹{s.avgModal.toLocaleString("en-IN")}
+                  </p>
+                  <p className="text-white/60 text-xs mt-0.5">avg modal / quintal</p>
+                  <div className="flex gap-2 mt-3">
+                    <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{s.markets} markets</span>
+                    <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{s.states} states</span>
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
       )}
@@ -84,14 +225,12 @@ export default async function HomePage() {
       {/* Popular Commodities Grid */}
       <section className="mb-10">
         <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-bold text-green-800">
-            Popular Commodities
-          </h2>
-          <span className="text-xs text-gray-500">₹ per quintal</span>
+          <h2 className="text-lg font-bold text-gray-800">📦 Popular Commodities</h2>
+          <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">₹ per quintal</span>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-          {popularSummaries.map((s) => (
-            <CommodityCard key={s.commodity} summary={s} />
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+          {popularSummaries.map((s, i) => (
+            <CommodityCard key={s.commodity} summary={s} index={i} />
           ))}
         </div>
       </section>
@@ -99,34 +238,39 @@ export default async function HomePage() {
       {/* Ad Banner Mid */}
       <AdBanner slot="2222222222" className="mb-8" />
 
-      {/* MSP CTA */}
-      <section className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8 flex flex-col md:flex-row items-center justify-between gap-4">
-        <div>
-          <h3 className="text-lg font-bold text-yellow-800">
-            Check MSP 2025-26
-          </h3>
-          <p className="text-sm text-yellow-700 mt-1">
-            Compare current mandi prices against Minimum Support Price for
-            Kharif &amp; Rabi crops.
-          </p>
+      {/* MSP CTA — vibrant */}
+      <section className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-6 mb-10 shadow-xl">
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute right-0 top-0 w-48 h-48 bg-white rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
         </div>
-        <Link
-          href="/msp"
-          className="bg-yellow-600 hover:bg-yellow-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-        >
-          View MSP →
-        </Link>
+        <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
+          <div>
+            <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1 text-xs font-semibold text-white mb-2">
+              📋 Kharif &amp; Rabi 2025-26
+            </div>
+            <h3 className="text-xl font-black text-white">
+              MSP vs Mandi Prices
+            </h3>
+            <p className="text-white/80 text-sm mt-1">
+              Are farmers getting fair prices? Compare live mandi rates against govt MSP.
+            </p>
+          </div>
+          <Link
+            href="/msp"
+            className="shrink-0 bg-white text-orange-600 font-bold px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-lg whitespace-nowrap"
+          >
+            Check MSP →
+          </Link>
+        </div>
       </section>
 
       {/* All Commodities */}
       {summaries.length > POPULAR_COMMODITIES.length && (
         <section className="mb-8">
-          <h2 className="text-xl font-bold text-green-800 mb-4">
-            All Commodities Today
-          </h2>
-          <div className="bg-white rounded-xl shadow overflow-hidden">
+          <h2 className="text-lg font-bold text-gray-800 mb-4">📊 All Commodities Today</h2>
+          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <table className="w-full text-sm">
-              <thead className="bg-green-700 text-white">
+              <thead className="bg-gradient-to-r from-green-700 to-teal-700 text-white">
                 <tr>
                   <th className="px-4 py-3 text-left">Commodity</th>
                   <th className="px-4 py-3 text-right">Modal ₹/qtl</th>

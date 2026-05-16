@@ -44,25 +44,32 @@ export default function RootLayout({
           strategy="afterInteractive"
         />
       </head>
-      <body className="bg-green-50 min-h-screen">
+      <body className="bg-slate-50 min-h-screen">
         <Navbar />
         <main>{children}</main>
-        <footer className="bg-green-900 text-green-200 text-center py-6 mt-12 text-sm">
-          <p>
-            MandiRates — Daily mandi prices powered by{" "}
-            <a
-              href="https://data.gov.in"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="underline"
-            >
-              Agmarknet / data.gov.in
-            </a>
-          </p>
-          <p className="mt-1 text-xs text-green-400">
-            Prices in ₹ per quintal. Data refreshed every 6 hours. For
-            informational purposes only.
-          </p>
+        <footer className="mt-16 border-t border-gray-200 bg-white">
+          <div className="max-w-6xl mx-auto px-4 py-8">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">🌾</span>
+                <span className="font-black text-base">
+                  <span className="text-green-700">Mandi</span>
+                  <span className="text-amber-500">Rates</span>
+                </span>
+              </div>
+              <p className="text-xs text-gray-400 text-center">
+                Live mandi prices via{" "}
+                <a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="underline text-green-600">
+                  Agmarknet
+                </a>
+                {" "}· ₹ per quintal · Refreshed every 6h · For reference only
+              </p>
+              <div className="flex gap-4 text-xs text-gray-400">
+                <a href="/msp" className="hover:text-green-700 transition-colors">MSP Rates</a>
+                <a href="/prices/tomato" className="hover:text-green-700 transition-colors">Vegetable Prices</a>
+              </div>
+            </div>
+          </div>
         </footer>
       </body>
     </html>

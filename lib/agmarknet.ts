@@ -9,7 +9,8 @@ const API_KEY =
 
 export async function fetchMandiPrices(
   commodity?: string,
-  limit = 100
+  limit = 100,
+  state?: string
 ): Promise<MandiPrice[]> {
   try {
     const params = new URLSearchParams({
@@ -20,6 +21,9 @@ export async function fetchMandiPrices(
     if (commodity) {
       params.set("filters[commodity]", commodity);
     }
+    if (state) {
+      params.set("filters[state]", state);
+    }
 
     const res = await fetch(`${BASE_URL}?${params.toString()}`, {
       next: { revalidate: 21600 }, // 6 hours
@@ -29,18 +33,20 @@ export async function fetchMandiPrices(
 
     const data: AgmarknetResponse = await res.json();
     if (!data.records || data.records.length === 0) {
-      return FALLBACK_PRICES.filter(
+      const fallback = FALLBACK_PRICES.filter(
         (p) =>
-          !commodity ||
-          p.commodity.toLowerCase() === commodity.toLowerCase()
+          (!commodity || p.commodity.toLowerCase() === commodity.toLowerCase()) &&
+          (!state || p.state.toLowerCase() === state.toLowerCase())
       );
+      return fallback;
     }
     return data.records;
   } catch {
-    // Graceful fallback
-    if (commodity) {
+    if (commodity || state) {
       const filtered = FALLBACK_PRICES.filter(
-        (p) => p.commodity.toLowerCase() === commodity.toLowerCase()
+        (p) =>
+          (!commodity || p.commodity.toLowerCase() === commodity.toLowerCase()) &&
+          (!state || p.state.toLowerCase() === state.toLowerCase())
       );
       return filtered.length > 0 ? filtered : FALLBACK_PRICES;
     }

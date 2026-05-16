@@ -13,37 +13,62 @@ const COMMODITY_EMOJI: Record<string, string> = {
   Turmeric: "🟡",
   Chilli: "🌶️",
   Garlic: "🧄",
+  Banana: "🍌",
+  Groundnut: "🥜",
+  Coconut: "🥥",
+  Sugarcane: "🎋",
 };
+
+const CARD_ACCENTS = [
+  "border-emerald-200 hover:border-emerald-400 bg-gradient-to-br from-white to-emerald-50",
+  "border-amber-200 hover:border-amber-400 bg-gradient-to-br from-white to-amber-50",
+  "border-teal-200 hover:border-teal-400 bg-gradient-to-br from-white to-teal-50",
+  "border-violet-200 hover:border-violet-400 bg-gradient-to-br from-white to-violet-50",
+  "border-rose-200 hover:border-rose-400 bg-gradient-to-br from-white to-rose-50",
+  "border-blue-200 hover:border-blue-400 bg-gradient-to-br from-white to-blue-50",
+];
+
+const PRICE_COLORS = [
+  "text-emerald-700",
+  "text-amber-600",
+  "text-teal-700",
+  "text-violet-700",
+  "text-rose-600",
+  "text-blue-700",
+];
 
 interface Props {
   summary: CommoditySummary;
+  index?: number;
 }
 
-export default function CommodityCard({ summary }: Props) {
+export default function CommodityCard({ summary, index = 0 }: Props) {
   const emoji = COMMODITY_EMOJI[summary.commodity] || "🌿";
+  const accent = CARD_ACCENTS[index % CARD_ACCENTS.length];
+  const priceColor = PRICE_COLORS[index % PRICE_COLORS.length];
+
   return (
     <Link
       href={`/prices/${encodeURIComponent(summary.commodity.toLowerCase())}`}
-      className="block bg-white rounded-xl shadow hover:shadow-md transition-shadow border border-green-100 p-4 hover:border-green-400"
+      className={`price-card block rounded-2xl border-2 ${accent} p-4 transition-all`}
     >
-      <div className="flex items-center gap-3 mb-2">
-        <span className="text-3xl">{emoji}</span>
-        <div>
-          <h3 className="font-semibold text-gray-800 text-base">
+      <div className="flex items-start gap-2 mb-2">
+        <span className="text-2xl leading-none">{emoji}</span>
+        <div className="min-w-0">
+          <h3 className="font-bold text-gray-800 text-sm leading-tight truncate">
             {summary.commodity}
           </h3>
-          <p className="text-xs text-gray-500">{summary.markets} markets</p>
+          <p className="text-[10px] text-gray-400 mt-0.5">{summary.markets} markets</p>
         </div>
       </div>
-      <div className="mt-1">
-        <p className="text-green-700 font-bold text-xl">
-          ₹{summary.avgModal.toLocaleString("en-IN")}
-        </p>
-        <p className="text-xs text-gray-500">modal price / quintal</p>
-        <p className="text-xs text-gray-400 mt-1">
-          ₹{summary.minPrice.toLocaleString("en-IN")} –{" "}
-          ₹{summary.maxPrice.toLocaleString("en-IN")}
-        </p>
+      <p className={`${priceColor} font-black text-2xl leading-none mt-2`}>
+        ₹{summary.avgModal.toLocaleString("en-IN")}
+      </p>
+      <p className="text-[10px] text-gray-400 mt-0.5">modal / quintal</p>
+      <div className="flex items-center gap-1 mt-2">
+        <span className="text-[10px] text-gray-400">
+          ₹{summary.minPrice.toLocaleString("en-IN")} – ₹{summary.maxPrice.toLocaleString("en-IN")}
+        </span>
       </div>
     </Link>
   );
