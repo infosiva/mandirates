@@ -10,7 +10,7 @@ import { CommoditySummary } from "@/lib/types";
 export const revalidate = 86400; // ISR every 24h
 
 export const metadata: Metadata = {
-  title: "AgriPrice India — Daily Mandi Prices & MSP Tracker",
+  title: "MandiRates — Daily Mandi Prices & MSP Tracker India",
   description:
     "Today's mandi (market) prices for all major crops across India. Live data from Agmarknet. Check MSP, compare prices, get AI insights.",
 };
@@ -42,7 +42,7 @@ export default async function HomePage() {
       {/* Hero */}
       <section className="text-center mb-10">
         <h1 className="text-3xl md:text-4xl font-bold text-green-800 mb-3">
-          🌾 AgriPrice India
+          🌾 MandiRates
         </h1>
         <p className="text-gray-600 text-lg mb-6">
           Daily mandi prices · MSP tracker · AI price insights

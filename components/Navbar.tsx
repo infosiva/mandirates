@@ -7,7 +7,7 @@ export default function Navbar() {
         <Link href="/" className="flex items-center gap-2">
           <span className="text-2xl">🌾</span>
           <span className="font-bold text-lg tracking-tight">
-            AgriPrice <span className="text-yellow-300">India</span>
+            Mandi<span className="text-yellow-300">Rates</span>
           </span>
         </Link>
         <div className="flex gap-4 text-sm font-medium">

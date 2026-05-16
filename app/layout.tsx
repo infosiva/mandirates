@@ -4,25 +4,28 @@ import Navbar from "@/components/Navbar";
 import Script from "next/script";
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://mandirates.app"),
   title: {
-    default: "AgriPrice India — Daily Mandi Prices & MSP Tracker",
-    template: "%s | AgriPrice India",
+    default: "MandiRates — Daily Mandi Prices & MSP Tracker India",
+    template: "%s | MandiRates",
   },
   description:
-    "Check today's mandi prices for all crops across India. Compare with MSP, get AI price insights. Live Agmarknet data for farmers, traders and agri businesses.",
+    "Check today's mandi rates for all crops across India. Compare with MSP, get AI price insights. Live Agmarknet data for farmers, traders and agri businesses.",
   keywords: [
+    "mandi rates",
     "mandi price",
     "agmarknet",
     "today vegetable price",
     "crop price India",
     "MSP 2025",
     "kisan mandi bhav",
-    "agri price",
+    "mandi bhav today",
   ],
   openGraph: {
-    siteName: "AgriPrice India",
+    siteName: "MandiRates",
     type: "website",
     locale: "en_IN",
+    url: "https://mandirates.app",
   },
 };
 
@@ -46,7 +49,7 @@ export default function RootLayout({
         <main>{children}</main>
         <footer className="bg-green-900 text-green-200 text-center py-6 mt-12 text-sm">
           <p>
-            AgriPrice India — Daily mandi prices powered by{" "}
+            MandiRates — Daily mandi prices powered by{" "}
             <a
               href="https://data.gov.in"
               target="_blank"
