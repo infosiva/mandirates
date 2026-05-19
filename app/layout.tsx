@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Script from "next/script";
+import FloatingChatWrapper from '@/components/FloatingChatWrapper'
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mandirates.app"),
@@ -71,6 +72,7 @@ export default function RootLayout({
             </div>
           </div>
         </footer>
+        <FloatingChatWrapper />
       </body>
     </html>
   );

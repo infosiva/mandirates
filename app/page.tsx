@@ -66,6 +66,17 @@ export default async function HomePage() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-6">
+{/* Animated blob bg */}
+      <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }} aria-hidden>
+        <div style={{ position: 'absolute', top: '-15%', left: '-8%', width: 600, height: 600, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)', filter: 'blur(80px)',
+          animation: 'blob1 14s ease-in-out infinite' }} />
+        <div style={{ position: 'absolute', bottom: '-10%', right: '-6%', width: 500, height: 500, borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)', filter: 'blur(90px)',
+          animation: 'blob2 18s ease-in-out infinite' }} />
+        <style>{`@keyframes blob1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-20px) scale(1.08)}
+          @keyframes blob2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-25px,20px) scale(1.06)}`}</style>
+      </div>
       {/* Hero — compact, colorful */}
       <section className="relative mb-8 rounded-3xl overflow-hidden bg-gradient-to-br from-green-800 via-green-700 to-teal-800 p-6 md:p-10 text-white shadow-2xl">
         {/* Background pattern */}
