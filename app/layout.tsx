@@ -27,6 +27,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_IN",
     url: "https://mandirates.app",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
   },
 };
 
@@ -43,6 +44,20 @@ export default function RootLayout({
           src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
           crossOrigin="anonymous"
           strategy="afterInteractive"
+        />
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "WebApplication",
+              "name": "MandiRates",
+              "description": "Live mandi rates and MSP tracker for Indian agricultural crops",
+              "url": "https://mandirates.app",
+              "applicationCategory": "BusinessApplication"
+            })
+          }}
         />
       </head>
       <body className="bg-slate-50 min-h-screen">
