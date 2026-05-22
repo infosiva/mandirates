@@ -52,3 +52,71 @@ html, body {
 .featured-badge { animation: featured-pulse 2s ease infinite; }
 
 * { box-sizing: border-box; }
+
+/* ── Mobile: prevent horizontal overflow ── */
+html, body { overflow-x: hidden; max-width: 100%; }
+* { -webkit-tap-highlight-color: transparent; }
+
+/* ── Shimmer animation ── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+/* ── Float animation ── */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+.float { animation: float 4s ease-in-out infinite; }
+
+/* ── Fade up ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.5s ease forwards; }
+
+/* ── Badge glow ── */
+@keyframes badge-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.3); }
+  50%       { box-shadow: 0 0 0 8px rgba(21, 128, 61, 0); }
+}
+.badge-glow { animation: badge-glow 2.5s ease-in-out infinite; }
+
+/* ── CSS marquee — zero JS ── */
+@keyframes marquee-scroll { to { transform: translateX(-50%); } }
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 28s linear infinite;
+}
+.marquee-track:hover { animation-play-state: paused; }
+.marquee-wrapper {
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, white 8%, white 92%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, white 8%, white 92%, transparent 100%);
+}
+
+/* ── Pulse glow on CTA button ── */
+@keyframes cta-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(21, 128, 61, 0.5); }
+  50%       { box-shadow: 0 0 0 14px rgba(21, 128, 61, 0); }
+}
+.cta-pulse { animation: cta-pulse 2s ease-in-out infinite; }
+
+/* ── Connecting line animation (How It Works) ── */
+@keyframes line-grow { from { width: 0%; } to { width: 100%; } }
+.line-grow { animation: line-grow 0.8s ease-out forwards; }
+
+/* ── Animate-in utilities (Radix accordion) ── */
+@keyframes fade-in-opacity { from { opacity: 0; } to { opacity: 1; } }
+.animate-in { animation-fill-mode: both; }
+.fade-in-0  { animation-name: fade-in-opacity; }
+.fade-out-0 { animation-name: fade-in-opacity; animation-direction: reverse; }
+.duration-200 { animation-duration: 200ms; }
+
+/* ── Reduce motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .badge-glow, .marquee-track, .cta-pulse, .float { animation: none !important; }
+}

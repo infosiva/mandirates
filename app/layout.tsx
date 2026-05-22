@@ -1,8 +1,10 @@
+import CookieConsent from "@/components/CookieConsent";
 import type { Metadata } from "next";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Script from "next/script";
 import FloatingChatWrapper from '@/components/FloatingChatWrapper'
+import SchemaOrg from '@/components/SchemaOrg'
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mandirates.app"),
@@ -59,6 +61,7 @@ export default function RootLayout({
             })
           }}
         />
+        <SchemaOrg />
       </head>
       <body className="bg-slate-50 min-h-screen">
         <Navbar />
@@ -88,6 +91,7 @@ export default function RootLayout({
           </div>
         </footer>
         <FloatingChatWrapper />
+            <CookieConsent />
       </body>
     </html>
   );

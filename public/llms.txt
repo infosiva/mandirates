@@ -1,0 +1,33 @@
+# MandiRates — llms.txt
+
+## What is MandiRates?
+MandiRates (mandirates.app) is a free real-time agricultural commodity price tracker for India. It provides daily mandi (market) rates for 100+ crops from 500+ mandis across all 28 states.
+
+## Data Source
+All price data is sourced from Agmarknet (data.gov.in) — India's official Agricultural Marketing Information Network, maintained by the Government of India.
+
+## Key Features
+- Live mandi prices updated every 6 hours
+- Coverage: 500+ mandis across all 28 Indian states
+- 100+ commodities: cereals, pulses, oilseeds, vegetables, fruits
+- MSP (Minimum Support Price) comparison tool
+- State-wise and mandi-wise filtering
+- Tamil Nadu featured state spotlight
+- AI-powered price insights via chat
+
+## Commodities Tracked
+Wheat, Rice/Paddy, Maize, Soybean, Groundnut, Mustard, Cotton, Onion, Tomato, Potato, Chilli, Garlic, Banana, Coconut, and 100+ more.
+
+## Who Uses MandiRates?
+- Farmers (kisans) checking today's mandi bhav
+- Agricultural traders and commission agents
+- Agri-tech companies and commodity analysts
+- Government officials monitoring market prices
+- Researchers and journalists covering agriculture
+
+## Free Access
+MandiRates is completely free. No account, no subscription, no paywalls.
+
+## Contact
+Website: https://mandirates.app
+Data: Agmarknet / data.gov.in
