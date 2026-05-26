@@ -91,7 +91,8 @@ export default function RootLayout({
           </div>
         </footer>
         <FloatingChatWrapper />
-            <CookieConsent />
+        <CookieConsent />
+        <Script defer data-site="mandirates.app" src="http://31.97.56.148:3098/t.js" strategy="afterInteractive" />
       </body>
     </html>
   );
