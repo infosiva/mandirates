@@ -1,13 +1,25 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
+
+const ACCENT = '#16a34a'
+const ACCENT_RGB = '22,163,74'
+const BG = 'rgba(6,12,6,0.97)'
 
 export default function FloatingChatWrapper() {
   const [open, setOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [msgs, setMsgs] = useState<{ role: 'user' | 'bot'; text: string }[]>([
-    { role: 'bot', text: "Hi! Ask me about mandi prices, crop rates, or market trends 🌾" },
+    { role: 'bot', text: "Hi! Ask me about mandi prices, crop rates, or MSP 🌾" },
   ])
   const [input, setInput] = useState('')
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640)
+    check()
+    window.addEventListener('resize', check)
+    return () => window.removeEventListener('resize', check)
+  }, [])
 
   async function send() {
     if (!input.trim()) return
@@ -24,39 +36,93 @@ export default function FloatingChatWrapper() {
     }
   }
 
+  const BOTTOM_OFFSET = 84
+  const panelStyle: React.CSSProperties = isMobile ? {
+    position: 'fixed', bottom: 0, left: 0, right: 0, zIndex: 9998,
+    width: '100%', height: `calc(100dvh - ${BOTTOM_OFFSET}px)`,
+    borderRadius: '16px 16px 0 0',
+    background: BG, border: `1px solid rgba(${ACCENT_RGB},0.25)`,
+    boxShadow: '0 -8px 40px rgba(0,0,0,0.8)',
+    display: 'flex', flexDirection: 'column', overflow: 'hidden',
+  } : {
+    position: 'fixed', bottom: 88, right: 24, zIndex: 9998,
+    width: 340, height: 460, borderRadius: 16,
+    background: BG, border: `1px solid rgba(${ACCENT_RGB},0.25)`,
+    boxShadow: '0 8px 40px rgba(0,0,0,0.7)',
+    display: 'flex', flexDirection: 'column', overflow: 'hidden',
+  }
+
   return (
     <>
-      <motion.button onClick={() => setOpen(o => !o)} whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.95 }}
+      <style>{`
+        @keyframes mandi-slide-up { from { opacity:0; transform:translateY(12px) scale(0.97); } to { opacity:1; transform:translateY(0) scale(1); } }
+        @keyframes mandi-slide-bottom { from { transform:translateY(100%); } to { transform:translateY(0); } }
+      `}</style>
+
+      <motion.button
+        onClick={() => setOpen(o => !o)}
+        whileHover={{ scale: 1.08 }} whileTap={{ scale: 0.93 }}
         style={{ position: 'fixed', bottom: 24, right: 24, width: 52, height: 52, borderRadius: '50%',
-          background: 'linear-gradient(135deg,#16a34a,#15803d)', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center',
-          justifyContent: 'center', boxShadow: '0 4px 20px rgba(22,163,74,0.4)', zIndex: 1000, fontSize: 20 }}>
+          background: `linear-gradient(135deg,${ACCENT},#15803d)`, border: 'none', cursor: 'pointer',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: `0 4px 20px rgba(${ACCENT_RGB},0.45)`, zIndex: 9999, fontSize: 20 }}>
         {open ? '✕' : '🌾'}
       </motion.button>
+
       <AnimatePresence>
         {open && (
-          <motion.div initial={{ opacity: 0, y: 10, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.97 }} transition={{ duration: 0.2 }}
-            style={{ position: 'fixed', bottom: 88, right: 24, width: 320, height: 420,
-              background: 'rgba(8,8,20,0.97)', border: '1px solid rgba(22,163,74,0.4)', borderRadius: 16,
-              display: 'flex', flexDirection: 'column', zIndex: 1000, overflow: 'hidden', backdropFilter: 'blur(20px)' }}>
-            <div style={{ padding: '12px 16px', borderBottom: '1px solid rgba(22,163,74,0.4)', fontSize: 13, fontWeight: 700, color: '#f8fafc' }}>
-              MandiRates AI
+          <motion.div
+            initial={isMobile ? { y: '100%' } : { opacity: 0, y: 12, scale: 0.97 }}
+            animate={isMobile ? { y: 0 } : { opacity: 1, y: 0, scale: 1 }}
+            exit={isMobile ? { y: '100%' } : { opacity: 0, y: 12, scale: 0.97 }}
+            transition={{ duration: isMobile ? 0.3 : 0.2, ease: [0.23,1,0.32,1] }}
+            style={panelStyle}
+          >
+            {/* Header */}
+            <div style={{ flexShrink: 0, padding: '12px 16px', borderBottom: `1px solid rgba(${ACCENT_RGB},0.2)`,
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 18 }}>🌾</span>
+                <span style={{ fontSize: 13, fontWeight: 700, color: '#eef4ee' }}>MandiRates AI</span>
+                <span style={{ fontSize: 10, fontWeight: 600, padding: '2px 7px', borderRadius: 20,
+                  background: `rgba(${ACCENT_RGB},0.18)`, color: '#4ade80', border: `1px solid rgba(${ACCENT_RGB},0.3)` }}>
+                  FREE
+                </span>
+              </div>
+              <button onClick={() => setOpen(false)} style={{ background: 'none', border: 'none', color: 'rgba(238,244,238,0.3)', fontSize: 18, cursor: 'pointer' }}>×</button>
             </div>
-            <div style={{ flex: 1, overflowY: 'auto', padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+
+            {/* Messages */}
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
               {msgs.map((m, i) => (
-                <div key={i} style={{ alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
-                  background: m.role === 'user' ? 'rgba(22,163,74,0.4)' : 'rgba(255,255,255,0.06)',
-                  padding: '8px 12px', borderRadius: 10, fontSize: 12, color: 'rgba(248,250,252,0.9)', maxWidth: '85%' }}>
+                <div key={i} style={{
+                  alignSelf: m.role === 'user' ? 'flex-end' : 'flex-start',
+                  background: m.role === 'user' ? `rgba(${ACCENT_RGB},0.35)` : 'rgba(255,255,255,0.07)',
+                  padding: '8px 12px', borderRadius: m.role === 'user' ? '12px 12px 4px 12px' : '12px 12px 12px 4px',
+                  fontSize: 13, color: 'rgba(238,244,238,0.9)', maxWidth: '85%', lineHeight: 1.5,
+                }}>
                   {m.text}
                 </div>
               ))}
             </div>
-            <div style={{ padding: '10px 12px', borderTop: '1px solid rgba(22,163,74,0.4)', display: 'flex', gap: 8 }}>
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === 'Enter' && send()}
-                placeholder="Search commodity or ask price..."
-                style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(22,163,74,0.4)',
-                  borderRadius: 8, padding: '6px 10px', fontSize: 12, color: '#f8fafc', outline: 'none' }} />
-              <button onClick={send} style={{ background: 'linear-gradient(135deg,#16a34a,#15803d)', border: 'none', borderRadius: 8, padding: '6px 12px', fontSize: 12, color: '#fff', cursor: 'pointer' }}>→</button>
+
+            {/* Input */}
+            <div style={{ flexShrink: 0, padding: '10px 12px', borderTop: `1px solid rgba(${ACCENT_RGB},0.15)`,
+              display: 'flex', gap: 8, paddingBottom: 'max(10px, env(safe-area-inset-bottom))' }}>
+              <input
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && send()}
+                placeholder="Ask about any crop price..."
+                style={{ flex: 1, background: 'rgba(255,255,255,0.06)', border: `1px solid rgba(${ACCENT_RGB},0.25)`,
+                  borderRadius: 10, padding: '8px 12px', fontSize: isMobile ? 16 : 13, color: '#eef4ee', outline: 'none' }}
+              />
+              <button onClick={send}
+                style={{ background: `linear-gradient(135deg,${ACCENT},#15803d)`, border: 'none', borderRadius: 10,
+                  padding: '8px 14px', fontSize: 14, color: '#fff', cursor: 'pointer', fontWeight: 600,
+                  boxShadow: `0 2px 10px rgba(${ACCENT_RGB},0.3)` }}>
+                →
+              </button>
             </div>
           </motion.div>
         )}

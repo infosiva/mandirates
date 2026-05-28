@@ -107,12 +107,12 @@ export default async function HomePage() {
             <div className="flex items-center gap-3 mb-4">
               <span className="text-2xl">🏛️</span>
               <div>
-                <h2 className="text-xl font-bold text-green-800">
+                <h2 className="text-xl font-bold text-green-300">
                   Tamil Nadu Markets Today
                 </h2>
                 <p className="text-xs text-gray-500">Live prices from TN mandis · ₹ per quintal</p>
               </div>
-              <span className="ml-auto text-xs font-medium bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200">
+              <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full" style={{ background: 'rgba(22,163,74,0.18)', color: '#4ade80', border: '1px solid rgba(22,163,74,0.3)' }}>
                 🌟 Featured State
               </span>
             </div>
@@ -144,9 +144,9 @@ export default async function HomePage() {
               })}
             </div>
             {tnSummaries.length > 4 && (
-              <div className="mt-3 bg-white border border-green-100 rounded-xl overflow-hidden shadow-sm">
+              <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.15)', background: 'rgba(255,255,255,0.03)' }}>
                 <table className="w-full text-sm">
-                  <thead className="bg-gradient-to-r from-green-700 to-teal-700 text-white">
+                  <thead className="bg-gradient-to-r from-green-800 to-teal-800 text-white">
                     <tr>
                       <th className="px-4 py-2 text-left">Crop</th>
                       <th className="px-4 py-2 text-right">Modal ₹</th>
@@ -157,20 +157,20 @@ export default async function HomePage() {
                   </thead>
                   <tbody>
                     {tnSummaries.filter((s) => s.avgModal > 0).slice(0, 8).map((s, i) => (
-                      <tr key={s.commodity} className={i % 2 === 0 ? "bg-white" : "bg-emerald-50"}>
-                        <td className="px-4 py-2 font-medium text-green-800">
+                      <tr key={s.commodity} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.05)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
+                        <td className="px-4 py-2 font-medium text-green-300">
                           {s.commodity.replace(/\(.*?\)/g, "").trim()}
                         </td>
-                        <td className="px-4 py-2 text-right font-bold text-emerald-700">
+                        <td className="px-4 py-2 text-right font-bold text-emerald-400">
                           ₹{s.avgModal.toLocaleString("en-IN")}
                         </td>
-                        <td className="px-4 py-2 text-right text-gray-400 hidden sm:table-cell">
+                        <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
                           ₹{s.minPrice.toLocaleString("en-IN")}
                         </td>
-                        <td className="px-4 py-2 text-right text-gray-400 hidden sm:table-cell">
+                        <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
                           ₹{s.maxPrice.toLocaleString("en-IN")}
                         </td>
-                        <td className="px-4 py-2 text-right text-gray-400 hidden md:table-cell">
+                        <td className="px-4 py-2 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
                           {s.markets}
                         </td>
                       </tr>
@@ -186,8 +186,8 @@ export default async function HomePage() {
         {topThree.length > 0 && (
           <section className="mb-10">
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-800">🇮🇳 National Highlights</h2>
-              <span className="text-xs text-gray-400">All India avg · ₹/qtl</span>
+              <h2 className="text-lg font-bold text-gray-100">🇮🇳 National Highlights</h2>
+              <span className="text-xs text-gray-500">All India avg · ₹/qtl</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {topThree.map((s, i) => {
@@ -222,8 +222,8 @@ export default async function HomePage() {
         {/* Popular Commodities Grid */}
         <section className="mb-10">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-bold text-gray-800">📦 Popular Commodities</h2>
-            <span className="text-xs text-gray-400 bg-gray-100 px-3 py-1 rounded-full">₹ per quintal</span>
+            <h2 className="text-lg font-bold text-gray-100">📦 Popular Commodities</h2>
+            <span className="text-xs px-3 py-1 rounded-full" style={{ color: 'rgba(238,244,238,0.45)', background: 'rgba(255,255,255,0.06)' }}>₹ per quintal</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {popularSummaries.map((s, i) => (
@@ -264,48 +264,36 @@ export default async function HomePage() {
         {/* All Commodities */}
         {summaries.length > POPULAR_COMMODITIES.length && (
           <section className="mb-8">
-            <h2 className="text-lg font-bold text-gray-800 mb-4">📊 All Commodities Today</h2>
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <h2 className="text-lg font-bold text-gray-100 mb-4">📊 All Commodities Today</h2>
+            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.15)', background: 'rgba(255,255,255,0.02)' }}>
               <table className="w-full text-sm">
-                <thead className="bg-gradient-to-r from-green-700 to-teal-700 text-white">
+                <thead style={{ background: 'linear-gradient(90deg, #166534, #0f766e)' }} className="text-white">
                   <tr>
                     <th className="px-4 py-3 text-left">Commodity</th>
                     <th className="px-4 py-3 text-right">Modal ₹/qtl</th>
-                    <th className="px-4 py-3 text-right hidden sm:table-cell">
-                      Min
-                    </th>
-                    <th className="px-4 py-3 text-right hidden sm:table-cell">
-                      Max
-                    </th>
-                    <th className="px-4 py-3 text-right hidden md:table-cell">
-                      Markets
-                    </th>
+                    <th className="px-4 py-3 text-right hidden sm:table-cell">Min</th>
+                    <th className="px-4 py-3 text-right hidden sm:table-cell">Max</th>
+                    <th className="px-4 py-3 text-right hidden md:table-cell">Markets</th>
                   </tr>
                 </thead>
                 <tbody>
                   {summaries.slice(0, 20).map((s, i) => (
-                    <tr
-                      key={s.commodity}
-                      className={i % 2 === 0 ? "bg-white" : "bg-green-50"}
-                    >
+                    <tr key={s.commodity} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.04)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
                       <td className="px-4 py-2">
-                        <Link
-                          href={`/prices/${encodeURIComponent(s.commodity.toLowerCase())}`}
-                          className="text-green-700 font-medium hover:underline"
-                        >
+                        <Link href={`/prices/${encodeURIComponent(s.commodity.toLowerCase())}`} className="text-green-400 font-medium hover:underline">
                           {s.commodity}
                         </Link>
                       </td>
-                      <td className="px-4 py-2 text-right font-semibold text-green-800">
+                      <td className="px-4 py-2 text-right font-semibold text-green-400">
                         ₹{s.avgModal.toLocaleString("en-IN")}
                       </td>
-                      <td className="px-4 py-2 text-right text-gray-500 hidden sm:table-cell">
+                      <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
                         ₹{s.minPrice.toLocaleString("en-IN")}
                       </td>
-                      <td className="px-4 py-2 text-right text-gray-500 hidden sm:table-cell">
+                      <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
                         ₹{s.maxPrice.toLocaleString("en-IN")}
                       </td>
-                      <td className="px-4 py-2 text-right text-gray-500 hidden md:table-cell">
+                      <td className="px-4 py-2 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
                         {s.markets}
                       </td>
                     </tr>

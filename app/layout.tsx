@@ -63,29 +63,32 @@ export default function RootLayout({
         />
         <SchemaOrg />
       </head>
-      <body className="bg-slate-50 min-h-screen">
+      <body className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
+        <div className="aurora aurora-primary" aria-hidden />
+        <div className="aurora aurora-secondary" aria-hidden />
+        <div className="aurora aurora-third" aria-hidden />
         <Navbar />
-        <main>{children}</main>
-        <footer className="mt-16 border-t border-gray-200 bg-white">
+        <main style={{ position: 'relative', zIndex: 1 }}>{children}</main>
+        <footer className="mt-16" style={{ borderTop: '1px solid rgba(22,163,74,0.15)', background: 'rgba(10,18,10,0.95)', position: 'relative', zIndex: 1 }}>
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
                 <span className="text-xl">🌾</span>
                 <span className="font-black text-base">
-                  <span className="text-green-700">Mandi</span>
-                  <span className="text-amber-500">Rates</span>
+                  <span className="text-green-400">Mandi</span>
+                  <span className="text-amber-400">Rates</span>
                 </span>
               </div>
-              <p className="text-xs text-gray-400 text-center">
+              <p className="text-xs text-center" style={{ color: 'rgba(238,244,238,0.4)' }}>
                 Live mandi prices via{" "}
-                <a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="underline text-green-600">
+                <a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="underline text-green-500">
                   Agmarknet
                 </a>
                 {" "}· ₹ per quintal · Refreshed every 6h · For reference only
               </p>
-              <div className="flex gap-4 text-xs text-gray-400">
-                <a href="/msp" className="hover:text-green-700 transition-colors">MSP Rates</a>
-                <a href="/prices/tomato" className="hover:text-green-700 transition-colors">Vegetable Prices</a>
+              <div className="flex gap-4 text-xs" style={{ color: 'rgba(238,244,238,0.4)' }}>
+                <a href="/msp" className="hover:text-green-400 transition-colors">MSP Rates</a>
+                <a href="/prices/tomato" className="hover:text-green-400 transition-colors">Vegetable Prices</a>
               </div>
             </div>
           </div>

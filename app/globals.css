@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #060c06;
+  --foreground: #eef4ee;
+  --surface-1: #0a120a;
+  --surface-2: #0f1a0f;
+  --border-subtle: rgba(22,163,74,0.08);
+  --border-default: rgba(22,163,74,0.14);
+  --accent: #16a34a;
+  --accent-amber: #d97706;
 }
 
 html, body {
@@ -14,6 +20,36 @@ html, body {
   color: var(--foreground);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
+
+/* Aurora blobs */
+.aurora {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  z-index: 0;
+}
+.aurora-primary {
+  top: -15%; left: -8%;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(22,163,74,0.16) 0%, transparent 70%);
+  animation: drift-a 16s ease-in-out infinite;
+}
+.aurora-secondary {
+  bottom: -10%; right: -6%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(217,119,6,0.10) 0%, transparent 70%);
+  animation: drift-b 20s ease-in-out infinite;
+}
+.aurora-third {
+  top: 45%; left: 55%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(16,185,129,0.07) 0%, transparent 70%);
+  animation: drift-c 24s ease-in-out infinite;
+}
+@keyframes drift-a { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(40px,-20px) scale(1.08)} }
+@keyframes drift-b { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-25px,20px) scale(1.06)} }
+@keyframes drift-c { 0%,100%{transform:translate(0,0) scale(1)} 50%{transform:translate(-15px,-15px) scale(1.04)} }
 
 /* Gradient text utility */
 .gradient-text {
