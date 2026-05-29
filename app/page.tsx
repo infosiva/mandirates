@@ -13,6 +13,7 @@ import HowItWorksSection from "@/components/HowItWorksSection";
 import FeaturesGrid      from "@/components/FeaturesGrid";
 import FAQSection        from "@/components/FAQSection";
 import FinalCTA          from "@/components/FinalCTA";
+import StateFilter       from "@/components/StateFilter";
 
 export const revalidate = 86400; // ISR every 24h
 
@@ -79,8 +80,24 @@ export default async function HomePage() {
       {/* 2. Marquee */}
       <MarqueeBar />
 
-      {/* 3. Price Data — existing sections preserved exactly */}
-      <div id="prices" className="max-w-6xl mx-auto px-4 py-6 w-full">
+      {/* 2b. Live Now strip */}
+      <div className="w-full border-b border-green-900/30" style={{ background: 'rgba(6, 30, 14, 0.6)' }}>
+        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3 text-xs text-green-400/80">
+          <span className="flex items-center gap-1.5 font-semibold">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
+            Live
+          </span>
+          <span className="text-gray-500">·</span>
+          <span>
+            Last updated: {summaries[0]?.date || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+          </span>
+          <span className="text-gray-500">·</span>
+          <span>{summaries.length} prices loaded</span>
+        </div>
+      </div>
+
+      {/* 3. Price Data */}
+      <div id="prices" className="max-w-6xl mx-auto px-4 pt-2 pb-6 w-full">
         {/* Animated blob bg */}
         <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }} aria-hidden>
           <div style={{ position: 'absolute', top: '-15%', left: '-8%', width: 600, height: 600, borderRadius: '50%',
@@ -221,9 +238,15 @@ export default async function HomePage() {
 
         {/* Popular Commodities Grid */}
         <section className="mb-10">
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-3">
             <h2 className="text-lg font-bold text-gray-100">📦 Popular Commodities</h2>
             <span className="text-xs px-3 py-1 rounded-full" style={{ color: 'rgba(238,244,238,0.45)', background: 'rgba(255,255,255,0.06)' }}>₹ per quintal</span>
+          </div>
+          {/* State filter tabs */}
+          <div className="mb-4">
+            <Suspense fallback={null}>
+              <StateFilter />
+            </Suspense>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {popularSummaries.map((s, i) => (
@@ -309,7 +332,7 @@ export default async function HomePage() {
       <HowItWorksSection />
 
       {/* 5. Features Grid */}
-      <Suspense fallback={<div className="h-96" />}>
+      <Suspense fallback={null}>
         <FeaturesGrid />
       </Suspense>
 
