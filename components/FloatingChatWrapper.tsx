@@ -10,7 +10,7 @@ export default function FloatingChatWrapper() {
   const [open, setOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [msgs, setMsgs] = useState<{ role: 'user' | 'bot'; text: string }[]>([
-    { role: 'bot', text: "Hi! Ask me about mandi prices, crop rates, or MSP 🌾" },
+    { role: 'bot', text: "Which crop and state? I'll pull today's mandi price, MSP comparison, and best market for you." },
   ])
   const [input, setInput] = useState('')
 

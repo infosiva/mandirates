@@ -32,9 +32,9 @@ export const siteConfig: SiteConfig = {
   domain:     'mandirates.app',
   themeColor: 'green',
 
-  heroBadge:    'mandirates · live mandi prices · updated daily',
-  headline:     ['Live mandi prices,', 'all India.'],
-  subheadline:  'Real-time agricultural commodity prices from mandis across India — wheat, rice, vegetables, pulses and more.',
+  heroBadge:    'mandirates · 500+ mandis · updated daily',
+  headline:     ['Know your crop\'s worth,', 'before you sell.'],
+  subheadline:  'Live mandi prices from 500+ markets across India — compare MSP, spot the best market, and sell at the right time.',
   ctaPrimary:   { text: 'Check Today\'s Prices →', href: '#prices' },
   ctaSecondary: { text: 'Compare MSP Rates', href: '/msp' },
 
@@ -78,8 +78,8 @@ export const siteConfig: SiteConfig = {
   ],
 
   finalCta: {
-    headline: 'Track every mandi, every crop.',
-    subtext:  'Free access. No account needed. All India coverage.',
+    headline: 'Sell at the right price, every time.',
+    subtext:  'Free. No account needed. 500+ mandis, all of India.',
     ctaText:  'Check Today\'s Prices →',
     ctaHref:  '#prices',
   },
