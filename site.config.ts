@@ -33,8 +33,8 @@ export const siteConfig: SiteConfig = {
   themeColor: 'green',
 
   heroBadge:    'mandirates · 500+ mandis · updated daily',
-  headline:     ['Know your crop\'s worth,', 'before you sell.'],
-  subheadline:  'Live mandi prices from 500+ markets across India — compare MSP, spot the best market, and sell at the right time.',
+  headline:     ['Today\'s mandi prices —', 'before you load the truck.'],
+  subheadline:  'Live rates from 500+ mandis. See MSP gap instantly. No login, no app, no waiting.',
   ctaPrimary:   { text: 'Check Today\'s Prices →', href: '#prices' },
   ctaSecondary: { text: 'Compare MSP Rates', href: '/msp' },
 
@@ -91,8 +91,8 @@ export const siteConfig: SiteConfig = {
   },
 
   seo: {
-    title:          'MandiRates — Daily Mandi Prices & MSP Tracker India',
-    description:    'Check today\'s mandi rates for all crops across India. Live Agmarknet data for 500+ mandis, 100+ commodities. Compare with MSP.',
+    title:          'MandiRates — Live Mandi Bhav Today | MSP Tracker India',
+    description:    'Today\'s mandi prices for 200+ crops across India. See MSP gap instantly. Live data from Agmarknet. Check rates before you sell.',
     ogImage:        '/og.png',
     llmsDescription: 'MandiRates (mandirates.app) provides free real-time agricultural commodity prices from 500+ mandis across India. Data sourced from Agmarknet (data.gov.in). Covers 100+ commodities including wheat, rice, vegetables, pulses, and oilseeds. Features MSP comparison, price trends, state-wise filtering, and daily updates every 6 hours. Completely free, no account required.',
   },

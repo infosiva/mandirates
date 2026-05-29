@@ -18,9 +18,9 @@ import StateFilter       from "@/components/StateFilter";
 export const revalidate = 86400; // ISR every 24h
 
 export const metadata: Metadata = {
-  title: "MandiRates — Daily Mandi Prices & MSP Tracker India",
+  title: "MandiRates — Live Mandi Bhav Today | MSP Tracker India",
   description:
-    "Today's mandi (market) prices for all major crops across India. Live data from Agmarknet. Check MSP, compare prices, get AI insights.",
+    "Today's mandi prices for 200+ crops across India. See MSP gap instantly. Live data from Agmarknet. Check rates before you sell.",
 };
 
 const TN_COMMODITIES = ["Paddy(Dhan)(Common)", "Banana", "Tomato", "Onion", "Groundnut", "Coconut"];
@@ -198,6 +198,57 @@ export default async function HomePage() {
             )}
           </section>
         )}
+
+        {/* Best Mandi Today */}
+        {(() => {
+          const BEST_CROPS = ['Tomato', 'Onion', 'Wheat', 'Paddy'];
+          const bestRows = BEST_CROPS.map((crop) => {
+            const match = summaries.find(
+              (s) => s.commodity.toLowerCase().includes(crop.toLowerCase()) || crop.toLowerCase().includes(s.commodity.toLowerCase())
+            );
+            return match ? { crop, summary: match } : null;
+          }).filter((r): r is { crop: string; summary: CommoditySummary } => r !== null && r.summary.avgModal > 0);
+
+          if (bestRows.length === 0) return null;
+          return (
+            <section className="mb-10">
+              <div className="flex items-center gap-3 mb-4">
+                <span className="text-2xl">🏆</span>
+                <div>
+                  <h2 className="text-xl font-bold text-green-300">Best Mandi Today</h2>
+                  <p className="text-xs text-gray-500">Highest price for each top crop — where to sell</p>
+                </div>
+              </div>
+              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.2)', background: 'rgba(255,255,255,0.02)' }}>
+                <table className="w-full text-sm">
+                  <thead style={{ background: 'linear-gradient(90deg, #166534, #0f766e)' }} className="text-white">
+                    <tr>
+                      <th className="px-4 py-3 text-left">Commodity</th>
+                      <th className="px-4 py-3 text-right">Best Price</th>
+                      <th className="px-4 py-3 text-right hidden sm:table-cell">Mandis</th>
+                      <th className="px-4 py-3 text-right hidden md:table-cell">States</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {bestRows.map(({ crop, summary: s }, i) => (
+                      <tr key={crop} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.04)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
+                        <td className="px-4 py-3 font-medium text-green-300">{crop}</td>
+                        <td className="px-4 py-3 text-right font-black text-emerald-400">
+                          ₹{s.maxPrice.toLocaleString('en-IN')}
+                          <span className="block text-[10px] text-gray-500 font-normal">
+                            Best price across {s.markets} mandis
+                          </span>
+                        </td>
+                        <td className="px-4 py-3 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>{s.markets}</td>
+                        <td className="px-4 py-3 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>{s.states}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          );
+        })()}
 
         {/* Today's National Highlights */}
         {topThree.length > 0 && (

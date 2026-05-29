@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CommoditySummary } from "@/lib/types";
+import { MSP_MAP } from "@/lib/msp-data";
 
 const COMMODITY_EMOJI: Record<string, string> = {
   Tomato: "🍅",
@@ -69,6 +70,13 @@ export default function CommodityCard({ summary, index = 0 }: Props) {
   const midpoint = (summary.minPrice + summary.maxPrice) / 2;
   const trendUp = summary.avgModal >= midpoint;
 
+  // MSP delta
+  const mspKey = Object.keys(MSP_MAP).find(
+    (k) => summary.commodity.toLowerCase().includes(k) || k.includes(summary.commodity.toLowerCase())
+  );
+  const msp = mspKey ? MSP_MAP[mspKey] : null;
+  const mspDiff = msp !== null ? Math.round(summary.avgModal - msp) : null;
+
   return (
     <Link
       href={`/prices/${encodeURIComponent(summary.commodity.toLowerCase())}`}
@@ -98,6 +106,19 @@ export default function CommodityCard({ summary, index = 0 }: Props) {
         ₹{summary.avgModal.toLocaleString("en-IN")}
       </p>
       <p className="text-[10px] text-gray-500 mt-0.5">modal / quintal</p>
+
+      {/* MSP delta badge */}
+      {mspDiff !== null && (
+        <span
+          className={`inline-block mt-1.5 text-[10px] font-semibold px-2 py-0.5 rounded-full ${
+            mspDiff >= 0
+              ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-700/40'
+              : 'bg-rose-900/60 text-rose-300 border border-rose-700/40'
+          }`}
+        >
+          {mspDiff >= 0 ? '▲' : '▼'} ₹{Math.abs(mspDiff).toLocaleString('en-IN')} {mspDiff >= 0 ? 'above' : 'below'} MSP
+        </span>
+      )}
 
       {/* Price range */}
       <p className="text-[10px] text-gray-500 mt-1">
