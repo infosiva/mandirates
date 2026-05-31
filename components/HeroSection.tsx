@@ -8,10 +8,7 @@ export default function HeroSection() {
   const isCentered = siteConfig.layout.heroVariant === 'centered'
 
   return (
-    <section
-      className="relative px-4 sm:px-6 pt-6 pb-4 max-w-4xl mx-auto"
-      style={{ maxHeight: '380px' }}
-    >
+    <section className="relative px-4 sm:px-6 pt-6 pb-6 max-w-4xl mx-auto">
       <div className={isCentered ? 'max-w-3xl mx-auto text-center' : 'max-w-xl'}>
         <HeroClient />
       </div>
