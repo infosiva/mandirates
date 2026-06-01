@@ -8,12 +8,12 @@ export default function HeroSection() {
   const isCentered = siteConfig.layout.heroVariant === 'centered'
 
   return (
-    <section className="relative px-4 sm:px-6 pt-6 pb-6 max-w-4xl mx-auto">
+    <section className="relative px-4 sm:px-6 pt-4 pb-2 max-w-4xl mx-auto">
       <div className={isCentered ? 'max-w-3xl mx-auto text-center' : 'max-w-xl'}>
         <HeroClient />
       </div>
       {/* Scroll hint */}
-      <div className="mt-3 text-center">
+      <div className="mt-1 text-center">
         <span className="text-xs text-green-500/70 animate-bounce inline-block">
           ↓ Live prices below
         </span>
