@@ -7,23 +7,24 @@ import AdBanner from "@/components/AdBanner";
 import Link from "next/link";
 import { CommoditySummary } from "@/lib/types";
 import { Suspense } from "react";
-import HeroSection       from "@/components/HeroSection";
-import MarqueeBar        from "@/components/MarqueeBar";
-import HowItWorksSection from "@/components/HowItWorksSection";
-import FeaturesGrid      from "@/components/FeaturesGrid";
-import FAQSection        from "@/components/FAQSection";
-import FinalCTA          from "@/components/FinalCTA";
-import StateFilter       from "@/components/StateFilter";
 
-export const revalidate = 86400; // ISR every 24h
+export const revalidate = 86400;
 
 export const metadata: Metadata = {
   title: "MandiRates — Live Mandi Bhav Today | MSP Tracker India",
-  description:
-    "Today's mandi prices for 200+ crops across India. See MSP gap instantly. Live data from Agmarknet. Check rates before you sell.",
+  description: "Today's mandi prices for 200+ crops across India. See MSP gap instantly. Live data from Agmarknet. Check rates before you sell.",
 };
 
 const TN_COMMODITIES = ["Paddy(Dhan)(Common)", "Banana", "Tomato", "Onion", "Groundnut", "Coconut"];
+
+function PriceTag({ val, type }: { val: number; type: 'modal' | 'min' | 'max' }) {
+  const colors = { modal: '#166534', min: '#6b8f6b', max: '#d97706' };
+  return (
+    <span style={{ color: colors[type], fontWeight: type === 'modal' ? 700 : 400 }}>
+      ₹{val.toLocaleString('en-IN')}
+    </span>
+  );
+}
 
 export default async function HomePage() {
   const [allPrices, tnPrices] = await Promise.all([
@@ -34,162 +35,154 @@ export default async function HomePage() {
   const summaries = summariseByCommodity(allPrices);
   const tnSummaries = summariseByCommodity(tnPrices);
 
-  // Filter to popular commodities only, in order
   const popularSummaries: CommoditySummary[] = POPULAR_COMMODITIES.map(
-    (name) =>
-      summaries.find(
-        (s) => s.commodity.toLowerCase() === name.toLowerCase()
-      ) || {
-        commodity: name,
-        avgModal: 0,
-        minPrice: 0,
-        maxPrice: 0,
-        markets: 0,
-        states: 0,
-        date: "",
-      }
+    (name) => summaries.find((s) => s.commodity.toLowerCase() === name.toLowerCase()) || {
+      commodity: name, avgModal: 0, minPrice: 0, maxPrice: 0, markets: 0, states: 0, date: "",
+    }
   ).filter((s) => s.avgModal > 0);
 
   const topThree = popularSummaries.slice(0, 3);
 
-  // TN spotlight: top 4 by data availability, fallback to any available
-  const tnSpotlight: CommoditySummary[] = TN_COMMODITIES.map(
-    (name) =>
-      tnSummaries.find(
-        (s) => s.commodity.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(s.commodity.toLowerCase())
-      )
-  )
-    .filter((s): s is CommoditySummary => !!s && s.avgModal > 0)
-    .slice(0, 4);
+  const tnDisplay = (() => {
+    const spotlight = TN_COMMODITIES.map((name) =>
+      tnSummaries.find((s) => s.commodity.toLowerCase().includes(name.toLowerCase()) || name.toLowerCase().includes(s.commodity.toLowerCase()))
+    ).filter((s): s is CommoditySummary => !!s && s.avgModal > 0).slice(0, 4);
+    return spotlight.length >= 2 ? spotlight : tnSummaries.filter((s) => s.avgModal > 0).slice(0, 4);
+  })();
 
-  const tnAny = tnSummaries.filter((s) => s.avgModal > 0).slice(0, 4);
-  const tnDisplay = tnSpotlight.length >= 2 ? tnSpotlight : tnAny;
-
-  const TN_COLORS = [
-    { bg: "from-emerald-600 to-teal-700", badge: "bg-emerald-500", text: "text-emerald-100" },
-    { bg: "from-amber-500 to-orange-600", badge: "bg-amber-400", text: "text-amber-100" },
-    { bg: "from-violet-600 to-purple-700", badge: "bg-violet-500", text: "text-violet-100" },
-    { bg: "from-rose-500 to-pink-600", badge: "bg-rose-400", text: "text-rose-100" },
-  ];
+  const lastUpdated = summaries[0]?.date || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' });
 
   return (
-    <div className="flex flex-col">
-      {/* 1. Hero */}
-      <HeroSection />
+    <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh' }}>
 
-      {/* 2. Marquee */}
-      <MarqueeBar />
+      {/* ── HERO — data-first, no wasted space ── */}
+      <section style={{ background: 'linear-gradient(180deg, #f0f7ec 0%, #fafdf7 100%)', borderBottom: '1px solid rgba(22,101,52,0.12)', padding: '28px 0 20px' }}>
+        <div className="max-w-6xl mx-auto px-4">
 
-      {/* 2b. Live Now strip */}
-      <div className="w-full border-b border-green-900/30" style={{ background: 'rgba(6, 30, 14, 0.6)' }}>
-        <div className="max-w-6xl mx-auto px-4 py-2 flex items-center gap-3 text-xs text-green-400/80">
-          <span className="flex items-center gap-1.5 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse inline-block" />
-            Live
-          </span>
-          <span className="text-gray-500">·</span>
-          <span>
-            Last updated: {summaries[0]?.date || new Date().toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
-          </span>
-          <span className="text-gray-500">·</span>
-          <span>{summaries.length} prices loaded</span>
+          {/* Top row: headline + live badge */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4 stagger-1">
+            <div>
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="w-2 h-2 rounded-full animate-pulse inline-block" style={{ background: '#16a34a' }} />
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#166534' }}>
+                  Live · Data from Agmarknet · {lastUpdated}
+                </span>
+              </div>
+              <h1 className="font-black leading-tight" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', letterSpacing: '-0.03em', color: '#1a2e1a' }}>
+                Today's mandi prices —<br />
+                <span style={{ color: '#166534' }}>before you load the truck.</span>
+              </h1>
+            </div>
+            <div className="flex gap-2 text-sm shrink-0">
+              {[['500+', 'Mandis'], ['200+', 'Crops'], ['Every 6h', 'Updated']].map(([v, l]) => (
+                <div key={l} className="data-card px-3 py-2 text-center">
+                  <div className="font-black" style={{ color: '#166534', fontSize: 16 }}>{v}</div>
+                  <div className="text-xs" style={{ color: '#6b8f6b' }}>{l}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Search bar — primary action */}
+          <div className="max-w-xl mb-4 stagger-2">
+            <SearchBar />
+            <p className="text-xs mt-1.5" style={{ color: '#6b8f6b' }}>
+              Search any crop · state · mandi — e.g. Tomato, Wheat, Onion
+            </p>
+          </div>
+
+          {/* Top 3 price pills */}
+          {topThree.length > 0 && (
+            <div className="flex flex-wrap gap-2 stagger-3">
+              {topThree.map((s) => (
+                <div key={s.commodity} className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm"
+                  style={{ background: '#fff', border: '1px solid rgba(22,101,52,0.15)', color: '#1a2e1a' }}>
+                  <span className="font-semibold">{s.commodity.replace(/\(.*?\)/g,'').trim()}</span>
+                  <span className="font-black" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</span>
+                  <span className="text-xs" style={{ color: '#6b8f6b' }}>/qtl</span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* ── MSP ALERT BANNER ── */}
+      <div style={{ background: 'linear-gradient(90deg, #d97706, #b45309)', color: '#fff', padding: '10px 0' }}>
+        <div className="max-w-6xl mx-auto px-4 flex items-center justify-between gap-4 flex-wrap">
+          <div className="flex items-center gap-2 text-sm">
+            <span>📋</span>
+            <span className="font-semibold">Kharif & Rabi 2025-26 MSP declared</span>
+            <span className="opacity-75 hidden sm:inline">— Are farmers getting fair prices?</span>
+          </div>
+          <Link href="/msp" className="text-xs font-bold px-3 py-1 rounded-full active:scale-[0.97]"
+            style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)' }}>
+            Compare MSP vs Mandi →
+          </Link>
         </div>
       </div>
 
-      {/* 3. Price Data */}
-      <div id="prices" className="max-w-6xl mx-auto px-4 pt-2 pb-6 w-full">
-        {/* Animated blob bg */}
-        <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none', zIndex: 0 }} aria-hidden>
-          <div style={{ position: 'absolute', top: '-15%', left: '-8%', width: 600, height: 600, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)', filter: 'blur(80px)',
-            animation: 'blob1 14s ease-in-out infinite' }} />
-          <div style={{ position: 'absolute', bottom: '-10%', right: '-6%', width: 500, height: 500, borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, transparent 70%)', filter: 'blur(90px)',
-            animation: 'blob2 18s ease-in-out infinite' }} />
-          <style>{`@keyframes blob1{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-20px) scale(1.08)}}
-            @keyframes blob2{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-25px,20px) scale(1.06)}}`}</style>
-        </div>
+      {/* ── MAIN DATA AREA — no gap ── */}
+      <div className="max-w-6xl mx-auto px-4 py-6">
+        <AdBanner slot="1111111111" className="mb-6" />
 
-        {/* Search */}
-        <div className="mb-4 max-w-xl mx-auto">
-          <SearchBar />
-        </div>
-
-        {/* Ad Banner Top */}
-        <AdBanner slot="1111111111" className="mb-8" />
-
-        {/* Tamil Nadu Spotlight — shown first */}
+        {/* Tamil Nadu spotlight */}
         {tnDisplay.length > 0 && (
-          <section className="mb-10">
-            <div className="flex items-center gap-3 mb-4">
-              <span className="text-2xl">🏛️</span>
-              <div>
-                <h2 className="text-xl font-bold text-green-300">
-                  Tamil Nadu Markets Today
-                </h2>
-                <p className="text-xs text-gray-500">Live prices from TN mandis · ₹ per quintal</p>
+          <section className="mb-8 stagger-1">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <span>🏛️</span>
+                <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>Tamil Nadu Markets Today</h2>
+                <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
+                  style={{ background: 'rgba(22,101,52,0.10)', color: '#166534' }}>Featured</span>
               </div>
-              <span className="ml-auto text-xs font-medium px-3 py-1 rounded-full" style={{ background: 'rgba(22,163,74,0.18)', color: '#4ade80', border: '1px solid rgba(22,163,74,0.3)' }}>
-                🌟 Featured State
-              </span>
+              <span className="text-xs" style={{ color: '#6b8f6b' }}>₹ per quintal</span>
             </div>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               {tnDisplay.map((s, i) => {
-                const c = TN_COLORS[i % TN_COLORS.length];
+                const palettes = [
+                  { bg: 'linear-gradient(135deg,#166534,#15803d)', badge: '#22c55e' },
+                  { bg: 'linear-gradient(135deg,#b45309,#d97706)', badge: '#fbbf24' },
+                  { bg: 'linear-gradient(135deg,#0f766e,#0d9488)', badge: '#2dd4bf' },
+                  { bg: 'linear-gradient(135deg,#7e22ce,#9333ea)', badge: '#c084fc' },
+                ];
+                const p = palettes[i % 4];
                 return (
-                  <div
-                    key={s.commodity}
-                    className={`bg-gradient-to-br ${c.bg} text-white rounded-2xl p-4 shadow-lg relative overflow-hidden`}
-                  >
-                    <div className={`absolute top-2 right-2 ${c.badge} text-white text-[10px] font-bold px-2 py-0.5 rounded-full`}>
-                      TN
-                    </div>
-                    <p className={`text-xs uppercase tracking-widest font-semibold ${c.text} mb-1`}>
-                      {s.commodity.replace(/\(.*?\)/g, "").trim()}
+                  <div key={s.commodity} className="text-white rounded-xl p-4 relative overflow-hidden stagger-" style={{ background: p.bg }}>
+                    <div className="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full"
+                      style={{ background: 'rgba(255,255,255,0.25)' }}>TN</div>
+                    <p className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-1">
+                      {s.commodity.replace(/\(.*?\)/g,'').trim()}
                     </p>
-                    <p className="text-2xl font-black mt-1">
-                      ₹{s.avgModal.toLocaleString("en-IN")}
-                    </p>
-                    <p className={`${c.text} text-xs mt-0.5`}>avg modal / qtl</p>
-                    <div className="flex items-center gap-2 mt-2">
-                      <span className="text-[10px] bg-white/20 rounded px-1.5 py-0.5">
-                        {s.markets} mandis
-                      </span>
-                    </div>
+                    <p className="text-2xl font-black">₹{s.avgModal.toLocaleString('en-IN')}</p>
+                    <p className="text-xs opacity-60 mt-0.5">{s.markets} mandis</p>
                   </div>
                 );
               })}
             </div>
+
+            {/* TN full table */}
             {tnSummaries.length > 4 && (
-              <div className="mt-3 rounded-xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.15)', background: 'rgba(255,255,255,0.03)' }}>
+              <div className="data-card overflow-hidden">
                 <table className="w-full text-sm">
-                  <thead className="bg-gradient-to-r from-green-800 to-teal-800 text-white">
-                    <tr>
-                      <th className="px-4 py-2 text-left">Crop</th>
-                      <th className="px-4 py-2 text-right">Modal ₹</th>
-                      <th className="px-4 py-2 text-right hidden sm:table-cell">Min</th>
-                      <th className="px-4 py-2 text-right hidden sm:table-cell">Max</th>
-                      <th className="px-4 py-2 text-right hidden md:table-cell">Mandis</th>
+                  <thead>
+                    <tr style={{ background: 'rgba(22,101,52,0.08)', borderBottom: '1px solid rgba(22,101,52,0.12)' }}>
+                      <th className="px-4 py-2.5 text-left font-semibold" style={{ color: '#166534' }}>Crop</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Min</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Modal</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Max</th>
+                      <th className="px-4 py-2.5 text-right font-semibold hidden md:table-cell" style={{ color: '#166534' }}>Mandis</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {tnSummaries.filter((s) => s.avgModal > 0).slice(0, 8).map((s, i) => (
-                      <tr key={s.commodity} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.05)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
-                        <td className="px-4 py-2 font-medium text-green-300">
-                          {s.commodity.replace(/\(.*?\)/g, "").trim()}
-                        </td>
-                        <td className="px-4 py-2 text-right font-bold text-emerald-400">
-                          ₹{s.avgModal.toLocaleString("en-IN")}
-                        </td>
-                        <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
-                          ₹{s.minPrice.toLocaleString("en-IN")}
-                        </td>
-                        <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
-                          ₹{s.maxPrice.toLocaleString("en-IN")}
-                        </td>
-                        <td className="px-4 py-2 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>
-                          {s.markets}
-                        </td>
+                    {tnSummaries.filter(s => s.avgModal > 0).slice(0, 8).map((s, i) => (
+                      <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(22,101,52,0.07)' }}>
+                        <td className="px-4 py-2 font-medium" style={{ color: '#1a2e1a' }}>{s.commodity.replace(/\(.*?\)/g,'').trim()}</td>
+                        <td className="px-4 py-2 text-right text-sm" style={{ color: '#6b8f6b' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
+                        <td className="px-4 py-2 text-right font-bold" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
+                        <td className="px-4 py-2 text-right text-sm" style={{ color: '#d97706' }}>₹{s.maxPrice.toLocaleString('en-IN')}</td>
+                        <td className="px-4 py-2 text-right hidden md:table-cell text-sm" style={{ color: '#6b8f6b' }}>{s.markets}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -199,86 +192,26 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Best Mandi Today */}
-        {(() => {
-          const BEST_CROPS = ['Tomato', 'Onion', 'Wheat', 'Paddy'];
-          const bestRows = BEST_CROPS.map((crop) => {
-            const match = summaries.find(
-              (s) => s.commodity.toLowerCase().includes(crop.toLowerCase()) || crop.toLowerCase().includes(s.commodity.toLowerCase())
-            );
-            return match ? { crop, summary: match } : null;
-          }).filter((r): r is { crop: string; summary: CommoditySummary } => r !== null && r.summary.avgModal > 0);
-
-          if (bestRows.length === 0) return null;
-          return (
-            <section className="mb-10">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="text-2xl">🏆</span>
-                <div>
-                  <h2 className="text-xl font-bold text-green-300">Best Mandi Today</h2>
-                  <p className="text-xs text-gray-500">Highest price for each top crop — where to sell</p>
-                </div>
-              </div>
-              <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.2)', background: 'rgba(255,255,255,0.02)' }}>
-                <table className="w-full text-sm">
-                  <thead style={{ background: 'linear-gradient(90deg, #166534, #0f766e)' }} className="text-white">
-                    <tr>
-                      <th className="px-4 py-3 text-left">Commodity</th>
-                      <th className="px-4 py-3 text-right">Best Price</th>
-                      <th className="px-4 py-3 text-right hidden sm:table-cell">Mandis</th>
-                      <th className="px-4 py-3 text-right hidden md:table-cell">States</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {bestRows.map(({ crop, summary: s }, i) => (
-                      <tr key={crop} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.04)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
-                        <td className="px-4 py-3 font-medium text-green-300">{crop}</td>
-                        <td className="px-4 py-3 text-right font-black text-emerald-400">
-                          ₹{s.maxPrice.toLocaleString('en-IN')}
-                          <span className="block text-[10px] text-gray-500 font-normal">
-                            Best price across {s.markets} mandis
-                          </span>
-                        </td>
-                        <td className="px-4 py-3 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>{s.markets}</td>
-                        <td className="px-4 py-3 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.45)' }}>{s.states}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </section>
-          );
-        })()}
-
-        {/* Today's National Highlights */}
+        {/* National highlights */}
         {topThree.length > 0 && (
-          <section className="mb-10">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-gray-100">🇮🇳 National Highlights</h2>
-              <span className="text-xs text-gray-500">All India avg · ₹/qtl</span>
+          <section className="mb-8 stagger-2">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1a2e1a' }}>
+                🇮🇳 National Highlights
+              </h2>
+              <span className="text-xs" style={{ color: '#6b8f6b' }}>All India avg · ₹/qtl</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {topThree.map((s, i) => {
-                const colors = [
-                  "from-green-600 to-emerald-700",
-                  "from-teal-600 to-cyan-700",
-                  "from-lime-600 to-green-700",
-                ];
+                const bgs = ['linear-gradient(135deg,#166534,#15803d)', 'linear-gradient(135deg,#0f766e,#0d9488)', 'linear-gradient(135deg,#4d7c0f,#65a30d)'];
                 return (
-                  <div
-                    key={s.commodity}
-                    className={`price-card bg-gradient-to-br ${colors[i % 3]} text-white rounded-2xl p-5 shadow-lg`}
-                  >
-                    <p className="text-xs uppercase tracking-widest font-semibold text-white/70 mb-1">
-                      {s.commodity}
-                    </p>
-                    <p className="text-4xl font-black mt-1 leading-tight">
-                      ₹{s.avgModal.toLocaleString("en-IN")}
-                    </p>
-                    <p className="text-white/60 text-xs mt-0.5">avg modal / quintal</p>
+                  <div key={s.commodity} className="text-white rounded-xl p-5" style={{ background: bgs[i % 3] }}>
+                    <p className="text-xs uppercase tracking-widest font-semibold opacity-70 mb-1">{s.commodity}</p>
+                    <p className="text-4xl font-black leading-tight">₹{s.avgModal.toLocaleString('en-IN')}</p>
+                    <p className="text-xs opacity-60 mt-0.5">avg modal / quintal</p>
                     <div className="flex gap-2 mt-3">
-                      <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{s.markets} markets</span>
-                      <span className="text-[10px] bg-white/20 rounded-full px-2 py-0.5">{s.states} states</span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.2)' }}>{s.markets} markets</span>
+                      <span className="text-[10px] font-medium px-2 py-0.5 rounded-full" style={{ background: 'rgba(255,255,255,0.2)' }}>{s.states} states</span>
                     </div>
                   </div>
                 );
@@ -287,17 +220,11 @@ export default async function HomePage() {
           </section>
         )}
 
-        {/* Popular Commodities Grid */}
-        <section className="mb-10">
+        {/* Popular commodities */}
+        <section className="mb-8 stagger-3">
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-lg font-bold text-gray-100">📦 Popular Commodities</h2>
-            <span className="text-xs px-3 py-1 rounded-full" style={{ color: 'rgba(238,244,238,0.45)', background: 'rgba(255,255,255,0.06)' }}>₹ per quintal</span>
-          </div>
-          {/* State filter tabs */}
-          <div className="mb-4">
-            <Suspense fallback={null}>
-              <StateFilter />
-            </Suspense>
+            <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>📦 Popular Commodities</h2>
+            <span className="text-xs px-2 py-1 rounded" style={{ color: '#6b8f6b', background: 'rgba(22,101,52,0.07)' }}>₹ per quintal</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {popularSummaries.map((s, i) => (
@@ -306,70 +233,41 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Ad Banner Mid */}
         <AdBanner slot="2222222222" className="mb-8" />
 
-        {/* MSP CTA — vibrant */}
-        <section className="relative overflow-hidden bg-gradient-to-r from-amber-500 via-orange-500 to-rose-500 rounded-3xl p-6 mb-10 shadow-xl">
-          <div className="absolute inset-0 opacity-20">
-            <div className="absolute right-0 top-0 w-48 h-48 bg-white rounded-full blur-3xl translate-x-1/2 -translate-y-1/2" />
-          </div>
-          <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
-            <div>
-              <div className="inline-flex items-center gap-1.5 bg-white/20 rounded-full px-3 py-1 text-xs font-semibold text-white mb-2">
-                📋 Kharif &amp; Rabi 2025-26
-              </div>
-              <h3 className="text-xl font-black text-white">
-                MSP vs Mandi Prices
-              </h3>
-              <p className="text-white/80 text-sm mt-1">
-                Are farmers getting fair prices? Compare live mandi rates against govt MSP.
-              </p>
-            </div>
-            <Link
-              href="/msp"
-              className="shrink-0 bg-white text-orange-600 font-bold px-6 py-3 rounded-xl hover:bg-orange-50 transition-colors shadow-lg whitespace-nowrap"
-            >
-              Check MSP →
-            </Link>
-          </div>
-        </section>
-
-        {/* All Commodities */}
+        {/* All commodities table */}
         {summaries.length > POPULAR_COMMODITIES.length && (
-          <section className="mb-8">
-            <h2 className="text-lg font-bold text-gray-100 mb-4">📊 All Commodities Today</h2>
-            <div className="rounded-2xl overflow-hidden" style={{ border: '1px solid rgba(22,163,74,0.15)', background: 'rgba(255,255,255,0.02)' }}>
+          <section className="mb-8 stagger-4">
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>📊 All Commodities Today</h2>
+              <span className="text-xs" style={{ color: '#6b8f6b' }}>
+                Source: Agmarknet · Updated {lastUpdated}
+              </span>
+            </div>
+            <div className="data-card overflow-hidden">
               <table className="w-full text-sm">
-                <thead style={{ background: 'linear-gradient(90deg, #166534, #0f766e)' }} className="text-white">
-                  <tr>
-                    <th className="px-4 py-3 text-left">Commodity</th>
-                    <th className="px-4 py-3 text-right">Modal ₹/qtl</th>
-                    <th className="px-4 py-3 text-right hidden sm:table-cell">Min</th>
-                    <th className="px-4 py-3 text-right hidden sm:table-cell">Max</th>
-                    <th className="px-4 py-3 text-right hidden md:table-cell">Markets</th>
+                <thead>
+                  <tr style={{ background: 'rgba(22,101,52,0.08)', borderBottom: '1px solid rgba(22,101,52,0.12)' }}>
+                    <th className="px-4 py-3 text-left font-semibold" style={{ color: '#166534' }}>Commodity</th>
+                    <th className="px-4 py-3 text-right font-semibold hidden sm:table-cell" style={{ color: '#6b8f6b' }}>Min ₹</th>
+                    <th className="px-4 py-3 text-right font-semibold" style={{ color: '#166534' }}>Modal ₹</th>
+                    <th className="px-4 py-3 text-right font-semibold hidden sm:table-cell" style={{ color: '#d97706' }}>Max ₹</th>
+                    <th className="px-4 py-3 text-right font-semibold hidden md:table-cell" style={{ color: '#6b8f6b' }}>Markets</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {summaries.slice(0, 20).map((s, i) => (
-                    <tr key={s.commodity} style={{ background: i % 2 === 0 ? 'transparent' : 'rgba(22,163,74,0.04)', borderBottom: '1px solid rgba(22,163,74,0.08)' }}>
-                      <td className="px-4 py-2">
-                        <Link href={`/prices/${encodeURIComponent(s.commodity.toLowerCase())}`} className="text-green-400 font-medium hover:underline">
+                  {summaries.slice(0, 25).map((s, i) => (
+                    <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(22,101,52,0.07)' }}>
+                      <td className="px-4 py-2.5">
+                        <Link href={`/prices/${encodeURIComponent(s.commodity.toLowerCase())}`}
+                          className="font-medium hover:underline" style={{ color: '#166534' }}>
                           {s.commodity}
                         </Link>
                       </td>
-                      <td className="px-4 py-2 text-right font-semibold text-green-400">
-                        ₹{s.avgModal.toLocaleString("en-IN")}
-                      </td>
-                      <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
-                        ₹{s.minPrice.toLocaleString("en-IN")}
-                      </td>
-                      <td className="px-4 py-2 text-right hidden sm:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
-                        ₹{s.maxPrice.toLocaleString("en-IN")}
-                      </td>
-                      <td className="px-4 py-2 text-right hidden md:table-cell" style={{ color: 'rgba(238,244,238,0.4)' }}>
-                        {s.markets}
-                      </td>
+                      <td className="px-4 py-2.5 text-right hidden sm:table-cell" style={{ color: '#6b8f6b' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-2.5 text-right font-bold" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-2.5 text-right hidden sm:table-cell" style={{ color: '#d97706' }}>₹{s.maxPrice.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-2.5 text-right hidden md:table-cell" style={{ color: '#6b8f6b' }}>{s.markets}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -379,19 +277,43 @@ export default async function HomePage() {
         )}
       </div>
 
-      {/* 4. How It Works */}
-      <HowItWorksSection />
+      {/* ── HOW IT WORKS ── */}
+      <section style={{ background: '#f0f7ec', borderTop: '1px solid rgba(22,101,52,0.10)', padding: '40px 0' }}>
+        <div className="max-w-6xl mx-auto px-4">
+          <h2 className="font-black text-2xl text-center mb-8" style={{ color: '#1a2e1a', letterSpacing: '-0.02em' }}>
+            Check the price in 2 taps
+          </h2>
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              { n: '01', icon: '🌾', title: 'Select commodity', desc: 'Tap to pick from wheat, rice, vegetables, pulses and 200+ crops. No typing needed.' },
+              { n: '02', icon: '📍', title: 'Choose your mandi', desc: 'Filter by state → district → market. Prices from the mandi nearest to you.' },
+              { n: '03', icon: '📈', title: 'See today\'s rate', desc: 'Modal, min, and max price from today\'s arrivals. Compare against MSP instantly.' },
+            ].map(s => (
+              <div key={s.n} className="data-card p-5 flex gap-4">
+                <div className="text-2xl">{s.icon}</div>
+                <div>
+                  <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6b8f6b' }}>{s.n}</div>
+                  <h3 className="font-bold mb-1" style={{ color: '#1a2e1a' }}>{s.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: '#3d5a3d' }}>{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      {/* 5. Features Grid */}
-      <Suspense fallback={null}>
-        <FeaturesGrid />
-      </Suspense>
-
-      {/* 6. FAQ */}
-      <FAQSection />
-
-      {/* 7. Final CTA */}
-      <FinalCTA />
+      {/* ── FOOTER CTA ── */}
+      <section style={{ background: 'linear-gradient(135deg, #166534, #15803d)', color: '#fff', padding: '40px 0' }}>
+        <div className="max-w-6xl mx-auto px-4 text-center">
+          <h2 className="font-black text-2xl mb-2" style={{ letterSpacing: '-0.02em' }}>Sell at the right price, every time.</h2>
+          <p className="opacity-80 mb-6 text-sm">Free. No account needed. 500+ mandis, all of India.</p>
+          <Link href="#prices"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm active:scale-[0.97]"
+            style={{ background: '#fff', color: '#166534', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+            Check Today's Prices →
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }
