@@ -25,11 +25,21 @@ export const metadata: Metadata = {
     "mandi bhav today",
   ],
   openGraph: {
+    title: "MandiRates — Daily Mandi Prices & MSP Tracker India",
+    description:
+      "Check today's mandi rates for all crops across India. Compare with MSP, get AI price insights. Live Agmarknet data for farmers, traders and agri businesses.",
     siteName: "MandiRates",
     type: "website",
     locale: "en_IN",
     url: "https://mandirates.app",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MandiRates — Daily Mandi Prices & MSP Tracker India",
+    description:
+      "Live mandi rates, MSP comparison and AI price insights for Indian crops. Free for farmers and traders.",
+    images: ["https://mandirates.app/og.png"],
   },
 };
 
