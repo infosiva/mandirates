@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@radix-ui/react-accordion": "^1.2.12",
+    "@vercel/edge-config": "^1.4.3",
     "framer-motion": "^12.39.0",
     "groq-sdk": "^1.2.0",
     "lucide-react": "^1.16.0",
