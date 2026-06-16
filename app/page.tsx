@@ -6,6 +6,7 @@ import CommodityCard from "@/components/CommodityCard";
 import Link from "next/link";
 import { CommoditySummary } from "@/lib/types";
 import { Suspense } from "react";
+import { CheckCircleIcon, MarketIcon, TrendIcon, ChartIcon, CropIcon, PinIcon, ArrowUpRightIcon } from "@/lib/portfolio-theme/icons";
 
 export const revalidate = 86400;
 
@@ -110,7 +111,7 @@ export default async function HomePage() {
       <div style={{ background: 'linear-gradient(90deg, #b45309, #92400e)', color: '#fff', padding: '10px 0' }}>
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-sm">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4" /><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
+            <CheckCircleIcon />
             <span className="font-semibold">Kharif & Rabi 2025-26 MSP declared</span>
             <span className="opacity-75 hidden sm:inline">— Are farmers getting fair prices?</span>
           </div>
@@ -129,7 +130,7 @@ export default async function HomePage() {
           <section className="mb-8 stagger-1">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18" /><path d="M5 21V7l8-4 8 4v14" /><path d="M9 21v-6h6v6" /></svg>
+                <MarketIcon stroke="#d97706" />
                 <h2 className="font-bold text-lg" style={{ color: '#1c1410' }}>Tamil Nadu Markets Today</h2>
                 <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
                   style={{ background: 'rgba(217,119,6,0.12)', color: '#b45309' }}>Featured</span>
@@ -190,7 +191,7 @@ export default async function HomePage() {
           <section className="mb-8 stagger-2">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1c1410' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                <TrendIcon stroke="#d97706" />
                 National Highlights
               </h2>
               <span className="text-xs" style={{ color: '#92765a' }}>All India avg · ₹/qtl</span>
@@ -232,7 +233,7 @@ export default async function HomePage() {
           <section className="mb-8 stagger-4">
             <div className="flex items-center justify-between mb-3">
               <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1c1410' }}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
+                <ChartIcon stroke="#d97706" />
                 All Commodities Today
               </h2>
               <span className="text-xs" style={{ color: '#92765a' }}>
@@ -280,12 +281,12 @@ export default async function HomePage() {
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { n: '01', icon: <path d="M12 2v6M5 9l7-4 7 4-7 4-7-4zM5 9v8l7 4 7-4V9" />, title: 'Select commodity', desc: 'Tap to pick from wheat, rice, vegetables, pulses and 200+ crops. No typing needed.' },
-              { n: '02', icon: <><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z" /><circle cx="12" cy="9" r="2.5" /></>, title: 'Choose your mandi', desc: 'Filter by state → district → market. Prices from the mandi nearest to you.' },
-              { n: '03', icon: <path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6" />, title: 'See today\'s rate', desc: 'Modal, min, and max price from today\'s arrivals. Compare against MSP instantly.' },
+              { n: '01', Icon: CropIcon, title: 'Select commodity', desc: 'Tap to pick from wheat, rice, vegetables, pulses and 200+ crops. No typing needed.' },
+              { n: '02', Icon: PinIcon, title: 'Choose your mandi', desc: 'Filter by state → district → market. Prices from the mandi nearest to you.' },
+              { n: '03', Icon: ArrowUpRightIcon, title: 'See today\'s rate', desc: 'Modal, min, and max price from today\'s arrivals. Compare against MSP instantly.' },
             ].map(s => (
               <div key={s.n} className="data-card p-5 flex gap-4">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">{s.icon}</svg>
+                <s.Icon width={24} height={24} stroke="#d97706" className="shrink-0" />
                 <div>
                   <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#92765a' }}>{s.n}</div>
                   <h3 className="font-bold mb-1" style={{ color: '#1c1410' }}>{s.title}</h3>
