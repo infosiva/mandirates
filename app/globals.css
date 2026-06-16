@@ -3,20 +3,19 @@
 @tailwind utilities;
 
 :root {
-  --bg:            #fafdf7;
-  --bg-2:          #f0f7ec;
+  --bg:            #fffbf5;
+  --bg-2:          #fff7ed;
   --surface:       #ffffff;
-  --surface-2:     #f5f9f2;
-  --border:        rgba(22,101,52,0.12);
-  --border-strong: rgba(22,101,52,0.22);
-  --forest:        #166534;
-  --forest-mid:    #15803d;
-  --forest-light:  #86efac;
+  --surface-2:     #fdf6ee;
+  --border:        rgba(217,119,6,0.14);
+  --border-strong: rgba(217,119,6,0.24);
+  --accent:        #d97706;
+  --accent-2:      #b45309;
   --amber:         #d97706;
   --amber-light:   #fbbf24;
-  --text:          #1a2e1a;
-  --text-2:        #3d5a3d;
-  --text-3:        #6b8f6b;
+  --text:          #1c1410;
+  --text-2:        #5c4a3a;
+  --text-3:        #92765a;
   --up:            #16a34a;
   --down:          #dc2626;
 }
@@ -46,7 +45,7 @@ html, body {
 .ticker-track:hover { animation-play-state: paused; }
 
 .price-row { transition: background 120ms ease-out; }
-.price-row:hover { background: rgba(22,101,52,0.05) !important; }
+.price-row:hover { background: rgba(217,119,6,0.06) !important; }
 
 .selector-bar {
   position: sticky;
@@ -65,7 +64,7 @@ html, body {
   transition: box-shadow 180ms ease-out, border-color 180ms ease-out;
 }
 .data-card:hover {
-  box-shadow: 0 4px 20px rgba(22,101,52,0.10);
+  box-shadow: 0 4px 20px rgba(217,119,6,0.12);
   border-color: var(--border-strong);
 }
 
@@ -78,8 +77,18 @@ html, body {
 .stagger-3 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 120ms; }
 .stagger-4 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 180ms; }
 
+@keyframes priceCardEnter {
+  from { opacity: 0; transform: scale(0.95) translateY(8px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+.price-card-enter {
+  animation: priceCardEnter 0.3s cubic-bezier(.23,1,.32,1) both;
+  transition: transform 150ms cubic-bezier(.23,1,.32,1);
+}
+.price-card-enter:hover { transform: translateY(-2px); }
+
 @media (prefers-reduced-motion: reduce) {
-  .stagger-1, .stagger-2, .stagger-3, .stagger-4 { animation: none; }
+  .stagger-1, .stagger-2, .stagger-3, .stagger-4, .price-card-enter { animation: none; }
   .ticker-track { animation: none; }
 }
 

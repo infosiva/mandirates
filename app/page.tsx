@@ -3,7 +3,6 @@ import { fetchMandiPrices, summariseByCommodity } from "@/lib/agmarknet";
 import { POPULAR_COMMODITIES } from "@/lib/fallback-data";
 import SearchBar from "@/components/SearchBar";
 import CommodityCard from "@/components/CommodityCard";
-import AdBanner from "@/components/AdBanner";
 import Link from "next/link";
 import { CommoditySummary } from "@/lib/types";
 import { Suspense } from "react";
@@ -56,7 +55,7 @@ export default async function HomePage() {
     <div style={{ background: 'var(--bg)', color: 'var(--text)', minHeight: '100vh' }}>
 
       {/* ── HERO — data-first, no wasted space ── */}
-      <section style={{ background: 'linear-gradient(180deg, #f0f7ec 0%, #fafdf7 100%)', borderBottom: '1px solid rgba(22,101,52,0.12)', padding: '28px 0 20px' }}>
+      <section style={{ background: 'linear-gradient(180deg, #fff7ed 0%, #fffbf5 100%)', borderBottom: '1px solid rgba(217,119,6,0.14)', padding: '28px 0 20px' }}>
         <div className="max-w-6xl mx-auto px-4">
 
           {/* Top row: headline + live badge */}
@@ -64,20 +63,20 @@ export default async function HomePage() {
             <div>
               <div className="flex items-center gap-2 mb-1.5">
                 <span className="w-2 h-2 rounded-full animate-pulse inline-block" style={{ background: '#16a34a' }} />
-                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#166534' }}>
+                <span className="text-xs font-bold uppercase tracking-widest" style={{ color: '#b45309' }}>
                   Live · Data from Agmarknet · {lastUpdated}
                 </span>
               </div>
-              <h1 className="font-black leading-tight" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', letterSpacing: '-0.03em', color: '#1a2e1a' }}>
+              <h1 className="font-black leading-tight" style={{ fontSize: 'clamp(1.6rem, 4vw, 2.4rem)', letterSpacing: '-0.03em', color: '#1c1410' }}>
                 Today's mandi prices —<br />
-                <span style={{ color: '#166534' }}>before you load the truck.</span>
+                <span style={{ color: '#d97706' }}>before you load the truck.</span>
               </h1>
             </div>
             <div className="flex gap-2 text-sm shrink-0">
               {[['500+', 'Mandis'], ['200+', 'Crops'], ['Every 6h', 'Updated']].map(([v, l]) => (
                 <div key={l} className="data-card px-3 py-2 text-center">
-                  <div className="font-black" style={{ color: '#166534', fontSize: 16 }}>{v}</div>
-                  <div className="text-xs" style={{ color: '#6b8f6b' }}>{l}</div>
+                  <div className="font-black" style={{ color: '#d97706', fontSize: 16 }}>{v}</div>
+                  <div className="text-xs" style={{ color: '#92765a' }}>{l}</div>
                 </div>
               ))}
             </div>
@@ -86,7 +85,7 @@ export default async function HomePage() {
           {/* Search bar — primary action */}
           <div className="max-w-xl mb-4 stagger-2">
             <SearchBar />
-            <p className="text-xs mt-1.5" style={{ color: '#6b8f6b' }}>
+            <p className="text-xs mt-1.5" style={{ color: '#92765a' }}>
               Search any crop · state · mandi — e.g. Tomato, Wheat, Onion
             </p>
           </div>
@@ -96,10 +95,10 @@ export default async function HomePage() {
             <div className="flex flex-wrap gap-2 stagger-3">
               {topThree.map((s) => (
                 <div key={s.commodity} className="flex items-center gap-2 px-3 py-1.5 rounded-full text-sm"
-                  style={{ background: '#fff', border: '1px solid rgba(22,101,52,0.15)', color: '#1a2e1a' }}>
+                  style={{ background: '#fff', border: '1px solid rgba(217,119,6,0.18)', color: '#1c1410' }}>
                   <span className="font-semibold">{s.commodity.replace(/\(.*?\)/g,'').trim()}</span>
-                  <span className="font-black" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</span>
-                  <span className="text-xs" style={{ color: '#6b8f6b' }}>/qtl</span>
+                  <span className="font-black" style={{ color: '#d97706' }}>₹{s.avgModal.toLocaleString('en-IN')}</span>
+                  <span className="text-xs" style={{ color: '#92765a' }}>/qtl</span>
                 </div>
               ))}
             </div>
@@ -108,14 +107,14 @@ export default async function HomePage() {
       </section>
 
       {/* ── MSP ALERT BANNER ── */}
-      <div style={{ background: 'linear-gradient(90deg, #d97706, #b45309)', color: '#fff', padding: '10px 0' }}>
+      <div style={{ background: 'linear-gradient(90deg, #b45309, #92400e)', color: '#fff', padding: '10px 0' }}>
         <div className="max-w-6xl mx-auto px-4 flex items-center justify-between gap-4 flex-wrap">
           <div className="flex items-center gap-2 text-sm">
-            <span>📋</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 12l2 2 4-4" /><path d="M21 12c0 4.97-4.03 9-9 9s-9-4.03-9-9 4.03-9 9-9 9 4.03 9 9z" /></svg>
             <span className="font-semibold">Kharif & Rabi 2025-26 MSP declared</span>
             <span className="opacity-75 hidden sm:inline">— Are farmers getting fair prices?</span>
           </div>
-          <Link href="/msp" className="text-xs font-bold px-3 py-1 rounded-full active:scale-[0.97]"
+          <Link href="/msp" className="text-xs font-bold px-3 py-1 rounded-full active:scale-[0.97] transition-transform"
             style={{ background: 'rgba(255,255,255,0.2)', border: '1px solid rgba(255,255,255,0.35)' }}>
             Compare MSP vs Mandi →
           </Link>
@@ -124,32 +123,26 @@ export default async function HomePage() {
 
       {/* ── MAIN DATA AREA — no gap ── */}
       <div className="max-w-6xl mx-auto px-4 py-6">
-        <AdBanner slot="1111111111" className="mb-6" />
 
         {/* Tamil Nadu spotlight */}
         {tnDisplay.length > 0 && (
           <section className="mb-8 stagger-1">
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <span>🏛️</span>
-                <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>Tamil Nadu Markets Today</h2>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 21h18" /><path d="M5 21V7l8-4 8 4v14" /><path d="M9 21v-6h6v6" /></svg>
+                <h2 className="font-bold text-lg" style={{ color: '#1c1410' }}>Tamil Nadu Markets Today</h2>
                 <span className="text-xs px-2 py-0.5 rounded-full font-semibold"
-                  style={{ background: 'rgba(22,101,52,0.10)', color: '#166534' }}>Featured</span>
+                  style={{ background: 'rgba(217,119,6,0.12)', color: '#b45309' }}>Featured</span>
               </div>
-              <span className="text-xs" style={{ color: '#6b8f6b' }}>₹ per quintal</span>
+              <span className="text-xs" style={{ color: '#92765a' }}>₹ per quintal</span>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-3">
               {tnDisplay.map((s, i) => {
-                const palettes = [
-                  { bg: 'linear-gradient(135deg,#166534,#15803d)', badge: '#22c55e' },
-                  { bg: 'linear-gradient(135deg,#b45309,#d97706)', badge: '#fbbf24' },
-                  { bg: 'linear-gradient(135deg,#0f766e,#0d9488)', badge: '#2dd4bf' },
-                  { bg: 'linear-gradient(135deg,#7e22ce,#9333ea)', badge: '#c084fc' },
-                ];
-                const p = palettes[i % 4];
+                const shades = ['#b45309', '#c2700a', '#d97706', '#e08214'];
+                const bg = shades[i % shades.length];
                 return (
-                  <div key={s.commodity} className="text-white rounded-xl p-4 relative overflow-hidden stagger-" style={{ background: p.bg }}>
+                  <div key={s.commodity} className="text-white rounded-xl p-4 relative overflow-hidden price-card-enter" style={{ background: bg }}>
                     <div className="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full"
                       style={{ background: 'rgba(255,255,255,0.25)' }}>TN</div>
                     <p className="text-xs font-semibold uppercase tracking-wide opacity-80 mb-1">
@@ -167,22 +160,22 @@ export default async function HomePage() {
               <div className="data-card overflow-hidden">
                 <table className="w-full text-sm">
                   <thead>
-                    <tr style={{ background: 'rgba(22,101,52,0.08)', borderBottom: '1px solid rgba(22,101,52,0.12)' }}>
-                      <th className="px-4 py-2.5 text-left font-semibold" style={{ color: '#166534' }}>Crop</th>
-                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Min</th>
-                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Modal</th>
-                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#166534' }}>Max</th>
-                      <th className="px-4 py-2.5 text-right font-semibold hidden md:table-cell" style={{ color: '#166534' }}>Mandis</th>
+                    <tr style={{ background: 'rgba(217,119,6,0.08)', borderBottom: '1px solid rgba(217,119,6,0.14)' }}>
+                      <th className="px-4 py-2.5 text-left font-semibold" style={{ color: '#b45309' }}>Crop</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#b45309' }}>Min</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#b45309' }}>Modal</th>
+                      <th className="px-4 py-2.5 text-right font-semibold" style={{ color: '#b45309' }}>Max</th>
+                      <th className="px-4 py-2.5 text-right font-semibold hidden md:table-cell" style={{ color: '#b45309' }}>Mandis</th>
                     </tr>
                   </thead>
                   <tbody>
                     {tnSummaries.filter(s => s.avgModal > 0).slice(0, 8).map((s, i) => (
-                      <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(22,101,52,0.07)' }}>
-                        <td className="px-4 py-2 font-medium" style={{ color: '#1a2e1a' }}>{s.commodity.replace(/\(.*?\)/g,'').trim()}</td>
-                        <td className="px-4 py-2 text-right text-sm" style={{ color: '#6b8f6b' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-2 text-right font-bold" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
+                      <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(217,119,6,0.08)' }}>
+                        <td className="px-4 py-2 font-medium" style={{ color: '#1c1410' }}>{s.commodity.replace(/\(.*?\)/g,'').trim()}</td>
+                        <td className="px-4 py-2 text-right text-sm" style={{ color: '#92765a' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
+                        <td className="px-4 py-2 text-right font-bold" style={{ color: '#b45309' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
                         <td className="px-4 py-2 text-right text-sm" style={{ color: '#d97706' }}>₹{s.maxPrice.toLocaleString('en-IN')}</td>
-                        <td className="px-4 py-2 text-right hidden md:table-cell text-sm" style={{ color: '#6b8f6b' }}>{s.markets}</td>
+                        <td className="px-4 py-2 text-right hidden md:table-cell text-sm" style={{ color: '#92765a' }}>{s.markets}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -196,16 +189,17 @@ export default async function HomePage() {
         {topThree.length > 0 && (
           <section className="mb-8 stagger-2">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1a2e1a' }}>
-                🇮🇳 National Highlights
+              <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1c1410' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20" /><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" /></svg>
+                National Highlights
               </h2>
-              <span className="text-xs" style={{ color: '#6b8f6b' }}>All India avg · ₹/qtl</span>
+              <span className="text-xs" style={{ color: '#92765a' }}>All India avg · ₹/qtl</span>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {topThree.map((s, i) => {
-                const bgs = ['linear-gradient(135deg,#166534,#15803d)', 'linear-gradient(135deg,#0f766e,#0d9488)', 'linear-gradient(135deg,#4d7c0f,#65a30d)'];
+                const shades = ['#92400e', '#b45309', '#d97706'];
                 return (
-                  <div key={s.commodity} className="text-white rounded-xl p-5" style={{ background: bgs[i % 3] }}>
+                  <div key={s.commodity} className="text-white rounded-xl p-5 price-card-enter" style={{ background: shades[i % 3] }}>
                     <p className="text-xs uppercase tracking-widest font-semibold opacity-70 mb-1">{s.commodity}</p>
                     <p className="text-4xl font-black leading-tight">₹{s.avgModal.toLocaleString('en-IN')}</p>
                     <p className="text-xs opacity-60 mt-0.5">avg modal / quintal</p>
@@ -224,7 +218,7 @@ export default async function HomePage() {
         <section className="mb-8 stagger-3">
           <div className="flex items-center justify-between mb-3">
             <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>📦 Popular Commodities</h2>
-            <span className="text-xs px-2 py-1 rounded" style={{ color: '#6b8f6b', background: 'rgba(22,101,52,0.07)' }}>₹ per quintal</span>
+            <span className="text-xs px-2 py-1 rounded" style={{ color: '#92765a', background: 'rgba(217,119,6,0.07)' }}>₹ per quintal</span>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
             {popularSummaries.map((s, i) => (
@@ -233,41 +227,42 @@ export default async function HomePage() {
           </div>
         </section>
 
-        <AdBanner slot="2222222222" className="mb-8" />
-
         {/* All commodities table */}
         {summaries.length > POPULAR_COMMODITIES.length && (
           <section className="mb-8 stagger-4">
             <div className="flex items-center justify-between mb-3">
-              <h2 className="font-bold text-lg" style={{ color: '#1a2e1a' }}>📊 All Commodities Today</h2>
-              <span className="text-xs" style={{ color: '#6b8f6b' }}>
+              <h2 className="font-bold text-lg flex items-center gap-2" style={{ color: '#1c1410' }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18" /><path d="M18 17V9" /><path d="M13 17V5" /><path d="M8 17v-3" /></svg>
+                All Commodities Today
+              </h2>
+              <span className="text-xs" style={{ color: '#92765a' }}>
                 Source: Agmarknet · Updated {lastUpdated}
               </span>
             </div>
             <div className="data-card overflow-hidden">
               <table className="w-full text-sm">
                 <thead>
-                  <tr style={{ background: 'rgba(22,101,52,0.08)', borderBottom: '1px solid rgba(22,101,52,0.12)' }}>
-                    <th className="px-4 py-3 text-left font-semibold" style={{ color: '#166534' }}>Commodity</th>
-                    <th className="px-4 py-3 text-right font-semibold hidden sm:table-cell" style={{ color: '#6b8f6b' }}>Min ₹</th>
-                    <th className="px-4 py-3 text-right font-semibold" style={{ color: '#166534' }}>Modal ₹</th>
+                  <tr style={{ background: 'rgba(217,119,6,0.08)', borderBottom: '1px solid rgba(217,119,6,0.14)' }}>
+                    <th className="px-4 py-3 text-left font-semibold" style={{ color: '#b45309' }}>Commodity</th>
+                    <th className="px-4 py-3 text-right font-semibold hidden sm:table-cell" style={{ color: '#92765a' }}>Min ₹</th>
+                    <th className="px-4 py-3 text-right font-semibold" style={{ color: '#b45309' }}>Modal ₹</th>
                     <th className="px-4 py-3 text-right font-semibold hidden sm:table-cell" style={{ color: '#d97706' }}>Max ₹</th>
-                    <th className="px-4 py-3 text-right font-semibold hidden md:table-cell" style={{ color: '#6b8f6b' }}>Markets</th>
+                    <th className="px-4 py-3 text-right font-semibold hidden md:table-cell" style={{ color: '#92765a' }}>Markets</th>
                   </tr>
                 </thead>
                 <tbody>
                   {summaries.slice(0, 25).map((s, i) => (
-                    <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(22,101,52,0.07)' }}>
+                    <tr key={s.commodity} className="price-row" style={{ borderBottom: '1px solid rgba(217,119,6,0.08)' }}>
                       <td className="px-4 py-2.5">
                         <Link href={`/prices/${encodeURIComponent(s.commodity.toLowerCase())}`}
-                          className="font-medium hover:underline" style={{ color: '#166534' }}>
+                          className="font-medium hover:underline" style={{ color: '#b45309' }}>
                           {s.commodity}
                         </Link>
                       </td>
-                      <td className="px-4 py-2.5 text-right hidden sm:table-cell" style={{ color: '#6b8f6b' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
-                      <td className="px-4 py-2.5 text-right font-bold" style={{ color: '#166534' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-2.5 text-right hidden sm:table-cell" style={{ color: '#92765a' }}>₹{s.minPrice.toLocaleString('en-IN')}</td>
+                      <td className="px-4 py-2.5 text-right font-bold" style={{ color: '#b45309' }}>₹{s.avgModal.toLocaleString('en-IN')}</td>
                       <td className="px-4 py-2.5 text-right hidden sm:table-cell" style={{ color: '#d97706' }}>₹{s.maxPrice.toLocaleString('en-IN')}</td>
-                      <td className="px-4 py-2.5 text-right hidden md:table-cell" style={{ color: '#6b8f6b' }}>{s.markets}</td>
+                      <td className="px-4 py-2.5 text-right hidden md:table-cell" style={{ color: '#92765a' }}>{s.markets}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -278,23 +273,23 @@ export default async function HomePage() {
       </div>
 
       {/* ── HOW IT WORKS ── */}
-      <section style={{ background: '#f0f7ec', borderTop: '1px solid rgba(22,101,52,0.10)', padding: '40px 0' }}>
+      <section style={{ background: '#fff7ed', borderTop: '1px solid rgba(217,119,6,0.12)', padding: '40px 0' }}>
         <div className="max-w-6xl mx-auto px-4">
-          <h2 className="font-black text-2xl text-center mb-8" style={{ color: '#1a2e1a', letterSpacing: '-0.02em' }}>
+          <h2 className="font-black text-2xl text-center mb-8" style={{ color: '#1c1410', letterSpacing: '-0.02em' }}>
             Check the price in 2 taps
           </h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { n: '01', icon: '🌾', title: 'Select commodity', desc: 'Tap to pick from wheat, rice, vegetables, pulses and 200+ crops. No typing needed.' },
-              { n: '02', icon: '📍', title: 'Choose your mandi', desc: 'Filter by state → district → market. Prices from the mandi nearest to you.' },
-              { n: '03', icon: '📈', title: 'See today\'s rate', desc: 'Modal, min, and max price from today\'s arrivals. Compare against MSP instantly.' },
+              { n: '01', icon: <path d="M12 2v6M5 9l7-4 7 4-7 4-7-4zM5 9v8l7 4 7-4V9" />, title: 'Select commodity', desc: 'Tap to pick from wheat, rice, vegetables, pulses and 200+ crops. No typing needed.' },
+              { n: '02', icon: <><path d="M12 21s7-7.5 7-12a7 7 0 1 0-14 0c0 4.5 7 12 7 12z" /><circle cx="12" cy="9" r="2.5" /></>, title: 'Choose your mandi', desc: 'Filter by state → district → market. Prices from the mandi nearest to you.' },
+              { n: '03', icon: <path d="M3 17l6-6 4 4 8-8M21 7v6M21 7h-6" />, title: 'See today\'s rate', desc: 'Modal, min, and max price from today\'s arrivals. Compare against MSP instantly.' },
             ].map(s => (
               <div key={s.n} className="data-card p-5 flex gap-4">
-                <div className="text-2xl">{s.icon}</div>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="shrink-0">{s.icon}</svg>
                 <div>
-                  <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#6b8f6b' }}>{s.n}</div>
-                  <h3 className="font-bold mb-1" style={{ color: '#1a2e1a' }}>{s.title}</h3>
-                  <p className="text-sm leading-relaxed" style={{ color: '#3d5a3d' }}>{s.desc}</p>
+                  <div className="text-[10px] font-bold uppercase tracking-widest mb-1" style={{ color: '#92765a' }}>{s.n}</div>
+                  <h3 className="font-bold mb-1" style={{ color: '#1c1410' }}>{s.title}</h3>
+                  <p className="text-sm leading-relaxed" style={{ color: '#5c4a3a' }}>{s.desc}</p>
                 </div>
               </div>
             ))}
@@ -303,13 +298,13 @@ export default async function HomePage() {
       </section>
 
       {/* ── FOOTER CTA ── */}
-      <section style={{ background: 'linear-gradient(135deg, #166534, #15803d)', color: '#fff', padding: '40px 0' }}>
+      <section style={{ background: 'linear-gradient(135deg, #b45309, #92400e)', color: '#fff', padding: '40px 0' }}>
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="font-black text-2xl mb-2" style={{ letterSpacing: '-0.02em' }}>Sell at the right price, every time.</h2>
           <p className="opacity-80 mb-6 text-sm">Free. No account needed. 500+ mandis, all of India.</p>
           <Link href="#prices"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm active:scale-[0.97]"
-            style={{ background: '#fff', color: '#166534', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition-transform"
+            style={{ background: '#fff', color: '#b45309', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
             Check Today's Prices →
           </Link>
         </div>
