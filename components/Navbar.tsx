@@ -11,7 +11,19 @@ export default function Navbar() {
     }}>
       <div className="max-w-6xl mx-auto px-4 py-2.5 flex items-center justify-between gap-4">
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <span className="text-xl">🌾</span>
+          <span style={{
+            width: 26, height: 26, borderRadius: 7,
+            background: 'linear-gradient(135deg, #9a3412, #ea580c)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
+          }}>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="3" y="14" width="3.4" height="7" rx="1" fill="white" />
+              <rect x="9.3" y="9.5" width="3.4" height="11.5" rx="1" fill="white" />
+              <rect x="15.6" y="5" width="3.4" height="16" rx="1" fill="white" />
+              <path d="M3 9l5-4 3.5 3L19 2" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+              <path d="M15 2h4v4" stroke="white" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+            </svg>
+          </span>
           <span className="font-black text-lg tracking-tight">
             <span style={{ color: '#1c1410' }}>Mandi</span>
             <span style={{ color: '#d97706' }}>Rates</span>
