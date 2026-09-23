@@ -6,6 +6,7 @@ import Script from "next/script";
 import FloatingChatWrapper from '@/components/FloatingChatWrapper'
 import SchemaOrg from '@/components/SchemaOrg'
 import FeedbackWidget from '@/components/FeedbackWidget'
+import { getSiteFlags } from '@/lib/flags'
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://mandirates.app"),
@@ -44,11 +45,12 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const flags = await getSiteFlags('mandirates')
   return (
     <html lang="en">
       <head>
@@ -79,7 +81,7 @@ export default function RootLayout({
         <div className="aurora aurora-primary" aria-hidden />
         <div className="aurora aurora-secondary" aria-hidden />
         <div className="aurora aurora-third" aria-hidden />
-        <Navbar />
+        <Navbar showMspLink={flags.msp_compare} />
         <main style={{ position: 'relative', zIndex: 1 }}>{children}</main>
         <footer className="mt-16" style={{ borderTop: '1px solid rgba(22,163,74,0.15)', background: 'rgba(10,18,10,0.95)', position: 'relative', zIndex: 1 }}>
           <div className="max-w-6xl mx-auto px-4 py-8">

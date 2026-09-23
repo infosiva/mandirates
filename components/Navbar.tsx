@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function Navbar() {
+export default function Navbar({ showMspLink = true }: { showMspLink?: boolean } = {}) {
   return (
     <nav style={{
       position: 'sticky', top: 0, zIndex: 50,
@@ -48,7 +48,7 @@ export default function Navbar() {
 
         <div className="flex items-center gap-0.5 sm:gap-1 text-sm font-medium shrink-0">
           <Link href="/" className="px-1.5 sm:px-3 py-1.5 rounded-lg transition-colors" style={{ color: '#5c4a3a' }}>Home</Link>
-          <Link href="/msp" className="px-1.5 sm:px-3 py-1.5 rounded-lg font-semibold" style={{ color: '#b45309' }}>MSP</Link>
+          {showMspLink && <Link href="/msp" className="px-1.5 sm:px-3 py-1.5 rounded-lg font-semibold" style={{ color: '#b45309' }}>MSP</Link>}
           <Link href="/prices/tomato"
             className="px-2.5 sm:px-4 py-1.5 rounded-lg font-bold text-white active:scale-[0.97] transition-transform"
             style={{ background: 'linear-gradient(135deg,#d97706,#b45309)', boxShadow: '0 2px 10px rgba(217,119,6,0.3)' }}>
