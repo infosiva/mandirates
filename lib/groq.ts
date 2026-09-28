@@ -23,7 +23,7 @@ Focus on: price trend, key factors affecting price, advice for farmers/traders. 
         Authorization: `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: "llama3-8b-8192",
+        model: "qwen/qwen3.8-27b",
         messages: [{ role: "user", content: prompt }],
         max_tokens: 200,
         temperature: 0.7,
