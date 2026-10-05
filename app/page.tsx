@@ -7,6 +7,7 @@ import Link from "next/link";
 import { CommoditySummary } from "@/lib/types";
 import { Suspense } from "react";
 import { CheckCircleIcon, MarketIcon, TrendIcon, ChartIcon, CropIcon, PinIcon, ArrowUpRightIcon } from "@/lib/portfolio-theme/icons";
+import { MagneticButton } from "@infosiva/shared-ui/modern";
 
 export const revalidate = 86400;
 
@@ -303,10 +304,13 @@ export default async function HomePage() {
         <div className="max-w-6xl mx-auto px-4 text-center">
           <h2 className="font-black text-2xl mb-2" style={{ letterSpacing: '-0.02em' }}>Sell at the right price, every time.</h2>
           <p className="opacity-80 mb-6 text-sm">Free. No account needed. 500+ mandis, all of India.</p>
-          <Link href="#prices"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm active:scale-[0.97] transition-transform"
-            style={{ background: '#fff', color: '#b45309', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
-            Check Today's Prices →
+          <Link href="#prices" className="inline-flex">
+            <MagneticButton
+              tabIndex={-1}
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-bold text-sm"
+              style={{ background: '#fff', color: '#b45309', boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
+              Check Today's Prices →
+            </MagneticButton>
           </Link>
         </div>
       </section>
