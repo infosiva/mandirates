@@ -37,7 +37,7 @@ export default function StateFilter() {
             className={`shrink-0 text-xs font-semibold px-3 py-1.5 rounded-full border transition-all duration-150 ${
               isActive
                 ? 'bg-green-600 text-white border-green-500 shadow-sm shadow-green-900/40'
-                : 'bg-transparent text-gray-400 border-green-900/40 hover:border-green-600/60 hover:text-green-300'
+                : 'bg-transparent text-green-900 border-green-800/30 hover:border-green-700 hover:bg-green-50'
             }`}
           >
             {s.label}

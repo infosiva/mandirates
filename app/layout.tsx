@@ -7,6 +7,8 @@ import FloatingChatWrapper from '@/components/FloatingChatWrapper'
 import SchemaOrg from '@/components/SchemaOrg'
 import FeedbackWidget from '@/components/FeedbackWidget'
 import { getSiteFlags } from '@/lib/flags'
+import { loadSiteTheme, buildThemeStyleTag, buildGa4Snippet } from '@/lib/theme-loader'
+import { AnimatedBg } from '@/components/AnimatedBg'
 
 import { MotionProvider } from "@infosiva/shared-ui/modern";
 export const metadata: Metadata = {
@@ -52,8 +54,12 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const flags = await getSiteFlags('mandirates')
+  const theme = await loadSiteTheme('mandirates')
+  const themeCss = buildThemeStyleTag(theme)
+  const ga4 = buildGa4Snippet(theme)
+  const archetype = theme?.layout?.archetype ?? 'directory-marketplace'
   return (
-    <html lang="en">
+    <html lang="en" data-layout={archetype}>
       <head>
         <meta name="google-adsense-account" content="ca-pub-4237294630161176" />
         <Script
@@ -77,33 +83,36 @@ export default async function RootLayout({
           }}
         />
         <SchemaOrg />
+        {themeCss ? <style dangerouslySetInnerHTML={{ __html: themeCss }} /> : null}
+        {ga4 ? <>
+          <script async src={`https://www.googletagmanager.com/gtag/js?id=${theme?.analytics?.ga4Id}`} />
+          <script dangerouslySetInnerHTML={{ __html: ga4 }} />
+        </> : null}
       </head>
       <body className="min-h-screen" style={{ background: 'var(--background)', color: 'var(--foreground)' }}>
-        <div className="aurora aurora-primary" aria-hidden />
-        <div className="aurora aurora-secondary" aria-hidden />
-        <div className="aurora aurora-third" aria-hidden />
+        <AnimatedBg theme={theme} fallback="aurora" />
         <Navbar showMspLink={flags.msp_compare} />
         <main style={{ position: 'relative', zIndex: 1 }}><MotionProvider>{children}</MotionProvider></main>
-        <footer className="mt-16" style={{ borderTop: '1px solid rgba(22,163,74,0.15)', background: 'rgba(10,18,10,0.95)', position: 'relative', zIndex: 1 }}>
+        <footer className="mt-16" style={{ borderTop: '1px solid var(--border)', background: 'var(--surface)', color: 'var(--ink-2)', position: 'relative', zIndex: 1 }}>
           <div className="max-w-6xl mx-auto px-4 py-8">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2">
-                <span className="text-xl">🌾</span>
+                
                 <span className="font-black text-base">
-                  <span className="text-green-400">Mandi</span>
-                  <span className="text-amber-400">Rates</span>
+                  <span style={{ color: "var(--ink)" }}>Mandi</span>
+                  <span style={{ color: "var(--accent-ink)" }}>Rates</span>
                 </span>
               </div>
-              <p className="text-xs text-center" style={{ color: 'rgba(238,244,238,0.4)' }}>
+              <p className="text-xs text-center" style={{ color: 'var(--muted)' }}>
                 Live mandi prices via{" "}
-                <a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="underline text-green-500">
+                <a href="https://data.gov.in" target="_blank" rel="noopener noreferrer" className="underline" style={{ color: "var(--accent-ink)" }}>
                   Agmarknet
                 </a>
                 {" "}· ₹ per quintal · Refreshed every 6h · For reference only
               </p>
-              <div className="flex gap-4 text-xs" style={{ color: 'rgba(238,244,238,0.4)' }}>
-                <a href="/msp" className="hover:text-green-400 transition-colors">MSP Rates</a>
-                <a href="/prices/tomato" className="hover:text-green-400 transition-colors">Vegetable Prices</a>
+              <div className="flex gap-4 text-xs" style={{ color: 'var(--muted)' }}>
+                <a href="/msp" className="hover:underline transition-colors">MSP Rates</a>
+                <a href="/prices/tomato" className="hover:underline transition-colors">Vegetable Prices</a>
               </div>
             </div>
           </div>

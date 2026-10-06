@@ -81,7 +81,7 @@ export default function CommodityCard({ summary, index = 0 }: Props) {
     <Link
       href={`/prices/${encodeURIComponent(summary.commodity.toLowerCase())}`}
       className={`price-card block rounded-2xl border ${accent} p-4 transition-all`}
-      style={{ background: 'rgba(255,255,255,0.03)' }}
+      style={{ background: 'var(--surface)' }}
     >
       <div className="flex items-start justify-between gap-2 mb-2">
         <div className="flex items-start gap-2 min-w-0">

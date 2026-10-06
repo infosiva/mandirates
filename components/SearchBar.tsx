@@ -30,9 +30,9 @@ export default function SearchBar() {
           placeholder="Search commodity (e.g. Tomato, Wheat, Onion)..."
           list="commodity-suggestions"
           className="flex-1 px-4 py-3 rounded-lg border-2 text-gray-800 text-base shadow"
-          style={{ borderColor: 'rgba(217,119,6,0.3)' }}
-          onFocus={(e) => (e.currentTarget.style.borderColor = '#d97706')}
-          onBlur={(e) => (e.currentTarget.style.borderColor = 'rgba(217,119,6,0.3)')}
+          style={{ borderColor: 'var(--border)' }}
+          onFocus={(e) => (e.currentTarget.style.borderColor = 'var(--accent)')}
+          onBlur={(e) => (e.currentTarget.style.borderColor = 'var(--border)')}
         />
         <datalist id="commodity-suggestions">
           {POPULAR_COMMODITIES.map((c) => (
@@ -42,9 +42,9 @@ export default function SearchBar() {
         <button
           type="submit"
           className="text-white px-6 py-3 rounded-lg font-semibold transition-colors shadow active:scale-[0.97]"
-          style={{ background: '#b45309' }}
-          onMouseEnter={(e) => (e.currentTarget.style.background = '#92400e')}
-          onMouseLeave={(e) => (e.currentTarget.style.background = '#b45309')}
+          style={{ background: 'var(--accent-ink)' }}
+          onMouseEnter={(e) => (e.currentTarget.style.background = 'var(--accent)')}
+          onMouseLeave={(e) => (e.currentTarget.style.background = 'var(--accent-ink)')}
         >
           Search
         </button>

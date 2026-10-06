@@ -2,100 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Theme vars: hub (Edge Config theme_mandirates) overrides --theme-primary/--background at runtime. */
 :root {
-  --background:    #f7faf5;
-  --foreground:    #1c1410;
-  --accent:        #16a34a;
-  --accent-2:      #15803d;
-  --border:        rgba(22,163,74,0.14);
-  --border-strong: rgba(22,163,74,0.24);
-  --bg:            #f7faf5;
-  --bg-2:          #eef6ea;
-  --surface:       #ffffff;
-  --surface-2:     #f2f8ef;
-  --amber:         #d97706;
-  --amber-light:   #fbbf24;
-  --amber:         #d97706;
-  --amber-light:   #fbbf24;
-  --text:          #1c1410;
-  --text-2:        #5c4a3a;
-  --text-3:        #92765a;
-  --up:            #16a34a;
-  --down:          #dc2626;
+  --accent: var(--theme-primary, #3f8f2a);
+  --accent-ink: color-mix(in srgb, var(--accent) 78%, #000);
+  --accent-2: #8a6a1f;
+  --bg: var(--theme-base, #f7f3e8);
+  --background: var(--bg);
+  --foreground: var(--ink);
+  --ink: #1f2a1c;
+  --ink-2: #4a5645;
+  --muted: #6b6a58;
+  --surface: #fffdf6;
+  --surface-2: #efe9d6;
+  --border: color-mix(in srgb, var(--accent) 22%, transparent);
+  --up: #3f8f2a;
+  --down: #b3261e;
+  --radius: 14px;
 }
 
-html, body {
-  overflow-x: hidden;
-  max-width: 100%;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
+html { scroll-behavior: smooth; }
+body { background: var(--bg); color: var(--ink); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 
-::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: var(--bg-2); }
-::-webkit-scrollbar-thumb { background: rgba(22,101,52,0.25); border-radius: 3px; }
+.mr-nav { position: sticky; top: 0; z-index: 50; background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+.mr-logo { width: 28px; height: 28px; border-radius: 8px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.mr-nav-link { padding: 10px 8px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 10px; color: var(--ink-2); transition: background .2s; }
+.mr-nav-link:hover { background: var(--surface-2); }
+.mr-btn { background: var(--accent-ink); color: #fff; font-weight: 700; padding: 0 16px; min-height: 44px; display: inline-flex; align-items: center; border-radius: 10px; transition: transform .15s, filter .2s; }
+.mr-btn:hover { filter: brightness(1.1); }
+.mr-btn:active { transform: scale(.97); }
 
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
-.ticker-track {
-  display: flex;
-  animation: ticker 28s linear infinite;
-  will-change: transform;
-}
-.ticker-track:hover { animation-play-state: paused; }
+.data-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); transition: transform .2s ease, box-shadow .2s ease; }
+.data-card:hover { transform: translateY(-2px); box-shadow: 0 8px 24px color-mix(in srgb, var(--accent) 14%, transparent); }
+.price-row { transition: background .15s; }
+.price-row:hover { background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.selector-bar { background: var(--surface); border: 1px solid var(--border); }
 
-.price-row { transition: background 120ms ease-out; }
-.price-row:hover { background: rgba(217,119,6,0.06) !important; }
+/* Archetype variants (hub switches via layout.archetype -> data-layout) */
+[data-layout="directory-marketplace"] .data-card { border-radius: 10px; }
+[data-layout="weekend-lifestyle"] .data-card { border-radius: 22px; }
+[data-layout="travel-magazine"] .data-card { border-radius: 4px; border-width: 2px; }
+[data-layout="career-portfolio"] .data-card { border-radius: 0; box-shadow: 4px 4px 0 var(--border); }
 
-.selector-bar {
-  position: sticky;
-  top: 52px;
-  z-index: 40;
-  background: rgba(250,253,247,0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
-}
-
-.data-card {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  transition: box-shadow 180ms ease-out, border-color 180ms ease-out;
-}
-.data-card:hover {
-  box-shadow: 0 4px 20px rgba(217,119,6,0.12);
-  border-color: var(--border-strong);
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.stagger-1 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 0ms; }
-.stagger-2 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 60ms; }
-.stagger-3 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 120ms; }
-.stagger-4 { animation: slideUp 0.35s cubic-bezier(.23,1,.32,1) both 180ms; }
-
-@keyframes priceCardEnter {
-  from { opacity: 0; transform: scale(0.95) translateY(8px); }
-  to   { opacity: 1; transform: scale(1) translateY(0); }
-}
-.price-card-enter {
-  animation: priceCardEnter 0.3s cubic-bezier(.23,1,.32,1) both;
-  transition: transform 150ms cubic-bezier(.23,1,.32,1);
-}
-.price-card-enter:hover { transform: translateY(-2px); }
+@keyframes priceCardEnter { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.price-card-enter { animation: priceCardEnter .45s ease both; }
+.stagger-1 { animation-delay: .05s; } .stagger-2 { animation-delay: .1s; } .stagger-3 { animation-delay: .15s; }
+.stagger-4 { animation-delay: .2s; } .stagger-5 { animation-delay: .25s; } .stagger-6 { animation-delay: .3s; }
 
 @media (prefers-reduced-motion: reduce) {
-  .stagger-1, .stagger-2, .stagger-3, .stagger-4, .price-card-enter { animation: none; }
-  .ticker-track { animation: none; }
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
-
-/* badge-glow kept for HeroClient compat */
-.badge-glow { }
-.aurora { display: none; }
