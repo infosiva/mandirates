@@ -1,3 +1,4 @@
+import { sanitizeUserInput } from '@/lib/guard'
 import { NextRequest, NextResponse } from 'next/server'
 import { AI_LIMITER } from '@/lib/rateLimit'
 
@@ -22,6 +23,7 @@ export async function POST(req: NextRequest) {
   const limited = AI_LIMITER.check(req); if (limited) return limited
   try {
     const { messages = [], system } = await req.json()
+    for (const m of Array.isArray(messages) ? messages : []) if (m && typeof m.content === 'string') m.content = sanitizeUserInput(m.content).text
     const msgs: Msg[] = [{ role: 'system', content: system ?? SYS }, ...messages]
     const tiers: Array<() => Promise<string>> = [
       () => openai('https://api.groq.com/openai/v1/chat/completions', process.env.GROQ_API_KEY, 'llama-3.3-70b-versatile', msgs),
